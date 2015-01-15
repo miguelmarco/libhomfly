@@ -56,13 +56,14 @@ typedef struct poly   poly;
 #define p_kill( p) \
 if (1) \
 { \
-  if ((p)->len) free((char *)(p)->term); \
   (p)->len = (sb4)0; \
 } else
+    //if ((p)->len) free((char *)(p)->term); \
+
 
 word   p_check(poly *p);                 /* check if a poly is a power of -2 */
 void   p_copy(poly *inp, poly *outp);                       /* copies a poly */
-void   p_show(poly *l);                                 /* displays the poly */
+char   *p_show(poly *l);                                 /* displays the poly */
 void   p_add(poly *inp1, poly *inp2, poly *outp);          /* adds two polys */
 void   p_mult(poly *inp1, poly *inp2, poly *outp);     /* multiply two polys */
 

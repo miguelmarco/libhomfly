@@ -6,7 +6,8 @@
   Public Domain
 ------------------------------------------------------------------------------
 */
-
+#include <stdlib.h>
+#include <gc.h>
 #ifndef STANDARD
 #include "standard.h"
 #endif
@@ -243,7 +244,7 @@ word  *two;                                  /* will two new weaves suffice? */
 
     for (i = oldcross; --i >= 0; ) temp[map[i]] = list[i];
     for (i = oldcross; --i >= 0; ) list[i] = map[temp[i]];
-    if (!old_going_in[first] && !old_going_in[second] && 
+    if (!old_going_in[first] && !old_going_in[second] &&
         (crossed ^ shouldBeRight ^ right))
     {
       *two = 1;

@@ -4,7 +4,7 @@
 
   When weaves do not fit in to one of the special cases handled in BOUND.C, it
   becomes necessary to actually model the weave (that is, build strings that
-  cross over each other) and manipulate the model.  The model is copied and 
+  cross over each other) and manipulate the model.  The model is copied and
   manipulated until the original weave has been replaced by a set of simple
   weaves.  c_handle() is called directly whenever a simple weave is produced.
   A single weave may need a set of as many as 2^oldin simple weaves to replace
@@ -14,6 +14,8 @@
 */
 
 /*  A program by Bob Jenkins, Spring 1989 */
+#include <stdlib.h>
+#include <gc.h>
 #ifndef STANDARD
 #include "standard.h"
 #endif
@@ -34,7 +36,7 @@
 #endif
 
 /* Since models are used only underneath the routines that create them,
-   the memory they use actually comes from local variables.  This cuts 
+   the memory they use actually comes from local variables.  This cuts
    down the time and space for memory allocation/deallocation incredibly. */
 
 /* Create a copy of the weave modeled in model1 in model2. */
@@ -90,18 +92,7 @@ static void   m_copy(node **model1,
 /* Display the structure of the model *model* */
 void   m_show(node **model)
 {
-  word   i;
-  node  *t;
-  for (i = 0; i < newcross; i++)
-    if (model[i] != 0)
-    {
-      printf("SHOWING STRING %d\n", i);
-      for (t = model[i]; t != 0; t = t->z)
-      {
-        printf("%d %d %d  %d %d %d %d  %d\n", t->correct, t->over,
-               t->right, t->self, t->m->self, t, t->m, t->z);
-      }
-    }
+
 }
 
 
@@ -129,7 +120,7 @@ static void   m_string_kill(node **model, word where)
         }
         else done = 1;
       }
-      if (model[i]) 
+      if (model[i])
       {
         for (t = model[i]; t->z;)
         {
@@ -202,10 +193,7 @@ static void   m_correct(node **model, word string)
 {
   node  *t;
 
-  if (model[string] && model[string]->self != string)
-  {
-      printf("how can that be bob\n");
-  }
+
 
   for (t = model[string]; t != 0; t = t->z)
   {
@@ -254,7 +242,7 @@ static void   m_k_switch(node *at, node *bt)
    *model* models a simple weave, or find a crossing to apply the HOMFLY
    recursion formula to.
 
-   A simple weave is a circle with strings going in and out of it.  Its 
+   A simple weave is a circle with strings going in and out of it.  Its
    internal structure is determined by the order of the strings going in
    and out of it.  Arrange its border in a right triangle, with the diagonal
    going from bottom left to upper right, and number the crossings 0..n-1
@@ -413,10 +401,7 @@ static void m_shrink(word *list,
     if ((i != first) && (i != second))
     {
       j = map[i];
-      if (j > i)
-      {
-        printf("you have a wrong assumption\n");
-      }
+
       model[j] = model[i];
       for (t = model[j]; t != 0; t = t->z) t->self = j;
       list[j] = list[i]-((list[i] > first)+(list[i] > second));
@@ -472,7 +457,7 @@ static void   m_switch(word *list,
     for (i = 0; i < oldcross; i++) list[i] = map[temp[i]];
     for (i = 0; i < oldcross; i++) temp2[map[i]] = model[i];
     for (i = 0; i < oldcross; i++) model[i] = temp2[i];
-    for (i = 0; i < oldcross; i++) 
+    for (i = 0; i < oldcross; i++)
       for (t = model[i]; t != 0; t = t->z) t->self = i;
     mfirst  = map[mfirst];
     msecond = map[msecond];
@@ -499,10 +484,7 @@ static void   m_switch(word *list,
 
   t        = (node *)mem;
   t->right  = plan.right;
-  if (t->right == (plan.over ^ old_going_in[plan.which] ^ plan.prev))
-  {
-    printf("handedness is messed up in models\n");
-  }
+
   t->self  = (going_in[mfirst]) ? mfirst : list[mfirst];
   t->over  = (t->right ^ going_in[mfirst] ^ going_in[msecond]);
   t->o1    = 0;
@@ -576,7 +558,7 @@ void   m_make(word  *list,
       }
     }
   }
-  for (i = 0; i < oldcross; ++i) 
+  for (i = 0; i < oldcross; ++i)
   {
     if (model[i])
     {

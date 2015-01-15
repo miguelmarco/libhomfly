@@ -4,6 +4,8 @@
  Bob Jenkins, 1990.  Public Domain.
 ------------------------------------------------------------------------------
 */
+#include <stdlib.h>
+#include <gc.h>
 #ifndef STANDARD
 #include "standard.h"
 #endif
@@ -22,15 +24,15 @@ void   l_show(dllink *l)
 
   if ((count = l) != 0)
   {
-    printf("%d ", count->c);
+    //printf("%d ", count->c);
     count = count->z;
     while (count != l)
     {
-      printf("%d ", count->c);
+      //printf("%d ", count->c);
       count = count->z;
     }
   }
-  printf("\n");
+  //printf("\n");
 }
 
 
@@ -46,7 +48,7 @@ void   l_add(dllink *inp,     /* the next crossing in this string */
 {
   dllink  *newlink;
 
-  newlink    = (dllink *)malloc(sizeof(dllink));
+  newlink    = (dllink *)GC_MALLOC(sizeof(dllink));
   newlink->c = crossings;
   if (inp == 0)
   {
@@ -83,6 +85,6 @@ dllink **l;
     ll->z->a = ll->a;
     ll->a->z = ll->z;
   }
-  free((char *)ll);
+  //free((char *)ll);
   *l = (dllink *)0;
 }

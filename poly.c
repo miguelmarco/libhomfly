@@ -1,6 +1,8 @@
 /*  Yet another program by Bob Jenkins.  3/16/88, for 15-451 */
 /*  Public Domain */
 
+#include <stdlib.h>
+#include <gc.h>
 #ifndef STANDARD
 #include "standard.h"
 #endif
@@ -21,7 +23,7 @@ word p_check(poly *p)
   sb4 compare;
 
   if (!p || !p->len) return FALSE;
-  for (sum=0, i=0; i<p->len; ++i) 
+  for (sum=0, i=0; i<p->len; ++i)
   {
     sum += p->term[i].coef;
   }
@@ -43,7 +45,7 @@ void   p_copy(poly *inp, poly *outp)
 
   if (inp->len)
   {
-    outp->term = (term *)malloc((size_t)(inp->len*sizeof(term)));
+    outp->term = (term *)GC_MALLOC((size_t)(inp->len*sizeof(term)));
     for (interm = inp->term, outerm = outp->term,
          endterm = interm+inp->len; interm != endterm; ++interm)
       if (interm->coef) *(outerm++) = *interm;
@@ -57,19 +59,23 @@ void   p_copy(poly *inp, poly *outp)
 }
 
 /* This displays the polynomial p */
-void   p_show(poly *p)
+char   *p_show(poly *p)
 {
   term  *pt;
   term  *pend;
   sb4    first;
   sb4    m;
   sb4    l;
+  char *bp;
+  size_t size;
+  FILE *stream;
 
 
-  printf("The polynomial is: \n  ");
+  stream = open_memstream (&bp, &size);
   if (!p->len)
   {
-    printf("0");
+    fprintf(stream,"0");
+    fclose(stream);
     return;
   }
   for (first = 1, pt = p->term, pend = pt+p->len; pt != pend; ++pt)
@@ -77,25 +83,27 @@ void   p_show(poly *p)
     if (!pt->coef) continue;
     m = p_sign(pt->m);
     l = p_sign(pt->l);
-    if (pt->coef < ((sb4)0)) printf(" - ");
-    else if (!first) printf(" + ");
-    if (pt->coef > ((sb4)1) ) printf("%ld", pt->coef);
-    else if (pt->coef < (sb4)(-1)) printf("%ld", -pt->coef);
-    else if ((!l) && (!m)) printf("%d", 1);
+    if (pt->coef < ((sb4)0)) fprintf(stream, " - ");
+    else if (!first) fprintf(stream," + ");
+    if (pt->coef > ((sb4)1) ) fprintf(stream, "%ld", pt->coef);
+    else if (pt->coef < (sb4)(-1)) fprintf(stream, "%ld", -pt->coef);
+    else if ((!l) && (!m)) fprintf(stream,"%d", 1);
     if (pt->m)
     {
-      printf("M");
-      if (m != 1) printf("^%ld", m);
+      fprintf(stream,"M");
+      if (m != 1) fprintf(stream,"^%ld", m);
     }
     if (pt->l)
     {
-      printf("L");
-      if (l != 1) printf("^%ld", l);
+      fprintf(stream, "L");
+      if (l != 1) fprintf(stream,"^%ld", l);
     }
     if (first) first = 0;
   }
-  printf("\n");
+  fclose(stream);
+  return bp;
 }
+
 
 
 
@@ -124,7 +132,7 @@ void   p_add(poly *inp1, poly *inp2, poly *outp)
   term  *end2;
   sb4    eq1;
 
-  outp->term = (term *)malloc((size_t)((inp1->len+inp2->len)*sizeof(term)));
+  outp->term = (term *)GC_MALLOC((size_t)((inp1->len+inp2->len)*sizeof(term)));
   t1         = inp1->term;
   end1       = t1+inp1->len;
   t2         = inp2->term;
@@ -181,7 +189,7 @@ void   p_mult(poly *inp1, poly *inp2, poly *outp)
     inp2  = blank;
   }
   p_init(outp);
-  xinp2->term = (term *)malloc((size_t)(inp2->len*sizeof(term)));
+  xinp2->term = (term *)GC_MALLOC((size_t)(inp2->len*sizeof(term)));
   xinp2->len  = inp2->len;
   for (t1 = inp1->term, end1 = t1+inp1->len,
        end2 = inp2->term+inp2->len; t1 < end1; ++t1)

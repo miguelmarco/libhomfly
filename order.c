@@ -4,6 +4,8 @@
  Public Domain
 ------------------------------------------------------------------------------
 */
+#include <stdlib.h>
+#include <gc.h>
 #ifndef STANDARD
 #include "standard.h"
 #endif
@@ -204,14 +206,11 @@ static void       o_delete(
   m = (going_in[j]) ? boundary[j]->z : boundary[j]->a;
   if ((l == boundary[j]) && (m == boundary[i]))
   {
-    if (going_in[i] == going_in[j])
-    {
-      printf("cannot delete two strings; not input + output\n");
-    }
+
     *done                          = 0;
     answer->r0[answer->reductions] = i;
     answer->r1[answer->reductions] = j;
-    if (i == 0) 
+    if (i == 0)
     {
       for (j = 0; j < (*n)-2; j++)
       {
@@ -219,7 +218,7 @@ static void       o_delete(
         going_in[j] = going_in[j+1];
       }
     }
-    else 
+    else
     {
       for (j = i-1; j < (*n)-2; j++)
       {
@@ -274,7 +273,7 @@ void       o_make(crossing  *k,
              n;
   instruct  *l;
 
-  l = (instruct *)malloc(sizeof(instruct)*crossings);
+  l = (instruct *)GC_MALLOC(sizeof(instruct)*crossings);
   for (i = 0; i < crossings; order1[i] = i, i++) ;
   for (i = 0; i < crossings; order2[i] = i, i++) ;
   o_order2(k, order2, order1, crossings);
@@ -285,9 +284,8 @@ void       o_make(crossing  *k,
   going_in[0] = 1;
   going_in[1] = 0;
   n           = 2;
-  printf("ordering: ");
-  for (i = 0; i < crossings; i++) printf("%d ", order1[i]);
-  printf("\n\n");
+
+
   for (i = 0; i < crossings; i++)
   {
     o_one_make(&n, boundary, going_in, k, order1[i], (l+i));
@@ -296,11 +294,7 @@ void       o_make(crossing  *k,
     //   printf("%d ", going_in[j]);
     // }
     // printf("\n");
-    if (n > 2*MAXSTRING)
-    {
-      printf("A cross section of %d is too big.\n",n);
-      printf("Do you have the handednesses right?\n");
-    }
+
   }
   *list = l;
 }
@@ -314,12 +308,5 @@ void       o_show(
   word  i;
   word  j;
 
-  for (i = 0; i < crossings; i++)
-  {
-    printf("%d  %d %d  %d %d\n", l[i].which, l[i].prev,
-           l[i].over, l[i].oldn, l[i].newn);
-    for (j = 0; j < l[i].reductions; j++)
-      printf("   %d %d %d\n", j, l[i].r0[j], l[i].r0[j]);
-  }
 }
 

@@ -4,6 +4,8 @@ By Bob Jenkins, revamped August 1990, in relation to my masters thesis
 Public Domain
 ------------------------------------------------------------------------------
 */
+#include <stdlib.h>
+#include <gc.h>
 #ifndef STANDARD
 #include "standard.h"
 #endif
@@ -98,7 +100,7 @@ void       c_handle(word *list,   /* matching of inputs/outputs in thisweave */
   newweaves[sum].boundary[1] = boundary[1];
   p_add(&newweaves[sum].tag, &thisweave->tag, temp);
   p_kill(&thisweave->tag);
-  p_kill(&newweaves[sum].tag); 
+  p_kill(&newweaves[sum].tag);
   newweaves[sum].tag = *temp;
 }
 
@@ -133,10 +135,7 @@ static void c_do_one_weave(
     list[list[j]] = j;                                /* set boundary output */
     j++;
   }
-  for (j=0; j<oldcross; ++j)
-    for (k=j+1; k<oldcross; ++k)
-      if (list[j] == list[k])
-	printf("something is wrong\n");
+
 
   /*----------------------------------------------- Try to handle it quickly */
   if (plan.reductions == 0) b_no_pairs(list, list2, &one, &two);
@@ -216,7 +215,7 @@ void       c_follow(instruct  *l,
   extern instruct plan;
 
   /*---------------------------------------------- Set up the starting weave */
-  oldweaves             = (weave *)malloc(sizeof(weave));
+  oldweaves             = (weave *)GC_MALLOC(sizeof(weave));
   oldweaves[0].boundary[0] = 1;
   oldweaves[0].boundary[1] = 0;
   oldweaves->tag.len = 0;
@@ -232,7 +231,7 @@ void       c_follow(instruct  *l,
     plan.newn       = plan.oldn+2-2*plan.reductions;
     b_manip(oldweaves);
     for (j = 2, newfact = 1; j <= newin; newfact *= (j++)) ;
-    newweaves = (weave *)malloc((sizeof(weave))*newfact);
+    newweaves = (weave *)GC_MALLOC((sizeof(weave))*newfact);
     for (j = 0; j < newfact;) newweaves[j++].tag.len = 0;
     for (j = 2, oldfact = 1; j <= oldin; oldfact *= (j++)) ;
     for (j = 0; j < oldfact; j++)
@@ -242,7 +241,7 @@ void       c_follow(instruct  *l,
         c_do_one_weave((oldweaves+j), newweaves);
       }
     }
-    free((char *)oldweaves);
+    //free((char *)oldweaves);
     oldweaves = newweaves;
     // printf("firstbatch\n");
     for (j = 0; j < newfact; ++j)
@@ -250,7 +249,7 @@ void       c_follow(instruct  *l,
       break;
       if (newweaves[j].tag.len != 0)
       {
-	printf("weave %d: ", j);
+
 	p_show(&newweaves[j].tag);
       }
     }
@@ -266,63 +265,71 @@ void       c_follow(instruct  *l,
       plan.newn -= 2;
       b_manip(oldweaves);
       newfact   = oldfact/oldin;
-      newweaves = (weave *)malloc((sizeof(weave))*newfact);
+      newweaves = (weave *)GC_MALLOC((sizeof(weave))*newfact);
       for (j = 0; j < newfact;) newweaves[j++].tag.len = 0;
       for (j = 0; j < oldfact; j++)
         if (oldweaves[j].tag.len)
         {
           c_do_one_weave((oldweaves+j), newweaves);
         }
-      free((char *)oldweaves);
+      //free((char *)oldweaves);
       oldweaves = newweaves;
       // printf("reduction %d\n", k);
       for (j = 0; j < newfact; ++j)
       {
           break;
-          if (newweaves[j].tag.len != 0)
-          {
-              printf("weave %d: ", j);
-              p_show(&newweaves[j].tag);
-          }
+
       }
     }
 
     /*------------------------ Gloat about how little work needed to be done */
-    printf("crossing: %d  cross section: %d  max weaves: %ld  total weaves handled: %ld\n",
-           l[i].crossing, newcross, newfact, total_weaves_handled);
+
   }
-  printf("A total of %ld weaves were considered\n", total_weaves_handled);
+
 
   /*------------------------------- Deposit the final polynomial in *answer* */
   *answer = &oldweaves->tag;
 }
 
 
-main(int argc, char **argv)
+char *homfly(char *argv)
 {
   crossing  *knot[1];       /* link for which to calculate HOMFLY polynomial */
   instruct  *plan[1];                                /* list of instructions */
   poly      *answer[1];           /* HOMFLY polynomial for the original link */
   word       crossings[1];                    /* number of crossings in link */
   word       common_sense;
+  char     *out;
 
   c_init();                                          /* initialize variables */
-  if (!k_read(crossings, knot, argc==2 ? argv[1] : (char *)0))  /* read link */
-  {
-    return FALSE;
-  }
+  k_read(crossings, knot, argv);  /* read link */
+
   o_make(*knot, *crossings, plan);       /* make plan for attacking the link */
   c_follow(*plan, *crossings, answer);                    /* follow the plan */
-  p_show(*answer);                                     /* display the answer */
-  if (!p_check(*answer))
-  {
-    printf("Sum of coefficients not a power of -2.  Bad knot file?\n");
-    return FALSE;
-  }
+  out = p_show(*answer);                                     /* display the answer */
 
-  free((char *)*knot);
-  free((char *)*plan);
+
+  //free((char *)*knot);
+  //free((char *)*plan);
   p_kill(*answer);
   /* If you want to be thorough, free the polynomials defined in c_init */
-  return TRUE;
+
+  //free (llplus.term);
+  //free (lplusm.term);
+  //free (lminusm.term);
+  //free (llminus.term);
+  //free (mll.term);
+
+  return out;
+
 }
+
+// int main()
+// {
+//     char *out;
+//     char input[] = "1 32 0 -1 2 1 3 -1 5 -1 13 -1 14 1 15 1 0 1 9 1 11 1 12 -1 13 1 5 1 6 1 7 1 8 -1 10 -1 12 1 14 -1 1 1 2 -1 4 1 6 -1 10 1 11 -1 15 -1 1 -1 3 1 4 -1 7 -1 8 1 9 -1 0 -1 1 -1 2 1 3 -1 4 1 5 -1 6 -1 7 -1 8 -1 9 1 10 -1 11 1 12 -1 13 1 14 -1 15 -1";
+//
+//     out = compute(input);
+//     printf("%s", out);
+//     return 0;
+// }

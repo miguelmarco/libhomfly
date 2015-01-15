@@ -4,6 +4,9 @@
   This module handles entire knots.
 ------------------------------------------------------------------------------
 */
+#include <stdlib.h>
+#include <gc.h>
+#include <string.h>
 #ifndef STANDARD
 #include "standard.h"
 #endif
@@ -40,45 +43,41 @@ void       k_show(word crossings,
         if (tab[i] != 10) count = k[i].o;
         else count = k[i].u;
         start = count;
-        if (count != 0) printf("%d ", count->c);
+
         if (k[count->c].o == count)
         {
-          printf("1   ");
+
           tab[count->c] += 10;
         }
         else
         {
-          printf("-1  ");
+
           tab[count->c] += 1;
         }
         if (count != 0) count = count->z;
         while (count != start)
         {
-          printf("%d ", count->c);
+
           if (k[count->c].o == count)
           {
-            printf("1   ");
+
             tab[count->c] += 10;
           }
           else
           {
-            printf("-1  ");
+
             tab[count->c] += 1;
           }
           count = count->z;
         }
       }
-      printf("\n");
+
     }
   }
-  printf("\n");
-  for (i = 0; i < crossings; i++)
-  {
-    if (k[i].hand == 1) printf("%d : right\n", i);
-    else if (k[i].hand == (-1)) printf("%d : left\n", i);
-  }
 
-  printf("\n");
+
+
+
 }
 
 
@@ -105,19 +104,10 @@ word       k_read(word *crossings,
   FILE      *f;
 
   for (i = 0; i < MAXCROSS; i++) k[i].hand = 0;
-  if (filename)
-  {
-    strcpy(name, filename);
-  }
-  else
-  {
-    printf("Enter name of knot file: ");
-    scanf("%s", name);
-  }
-  f = fopen(name, "r");
+
+  f = fmemopen(filename, strlen(filename), "r");
   if (f == 0)
   {
-    printf("Can't find %s \n", name);
     fclose(f);
     return FALSE;
   }
@@ -135,8 +125,8 @@ word       k_read(word *crossings,
       /* check that OVER is legal */
       if ((over != 1) && (over != -1))
       {
-        printf("string %d, %dth crossing (%d %d), %d is neither 1 nor -1\n",
-               i,j,where,over,over);
+        //printf("string %d, %dth crossing (%d %d), %d is neither 1 nor -1\n",
+        //       i,j,where,over,over);
         return FALSE;
       }
       if (over == 1)
@@ -159,18 +149,17 @@ word       k_read(word *crossings,
   }
   (*crossings)++;
   i = fclose(f);
-  *kk = (crossing *)malloc(sizeof(crossing)*(*crossings));
+  *kk = (crossing *)GC_MALLOC(sizeof(crossing)*(*crossings));
   for (i = 0; i < (*crossings); i++) (*kk)[i] = k[i];
 
   /* check that every crossing has an overpass and underpass */
   for (i = 0; i < (*crossings); i++)
   {
-    if (!k[i].o) printf("no overpass  for crossing %d !!!\n",i);
-    else if (!k[i].u) printf("no underpass for crossing %d !!!\n",i);
+    if (!k[i].o) return FALSE;
+    else if (!k[i].u) return FALSE;
     else if ((k[i].hand != 1) && (k[i].hand != -1))
     {
-      printf("crossing %d is neither right or left handed, %d\n",
-             i,k[i].hand);
+      return FALSE;
     }
     else continue;
     return FALSE;
