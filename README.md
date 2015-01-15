@@ -66,4 +66,4 @@ If there are n crossings, they must be named 0..n-1.
 
 The original program by Robert J Jenkins Jr is in the public domain, so i choose to keep it. This means in particular that you are free to distribute it or any derivative work under whichever license you choose.
 
-[1]: [Original program](http://burtleburtle.net/bob/knot/homfly.html)
+[1]: http://burtleburtle.net/bob/knot/homfly.html
