@@ -24,7 +24,9 @@ The modifications done to the original program are:
 
 Just running
 
+````
 make 
+````
 
 should compile the library. Then just copy the header homfly.h to your headers directory (in linux, it is usually /usr/include/) and the file libhomfly.so to your library directory (in linux /usr/lib/).
 
