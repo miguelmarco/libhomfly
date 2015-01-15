@@ -55,11 +55,12 @@ Note that, in order to compile it, you need to have the boehm garbage collector 
 
 ### Input format
 
-Links are represented by a string with numbers separated by spaces as follows:
-1. how many strings,
- 2.for each string, how many crossings, then
- 3. for each crossing, the cross name, then 1 if over, -1 if under
-4. for each crossing, the name of the crossing and 1 if right, -1 if left.
+Links are represented by a string with numbers separated by spaces as follows
+
+* how many strings,
+ * for each string, how many crossings, then
+   * for each crossing, the cross name, then 1 if over, -1 if under
+* for each crossing, the name of the crossing and 1 if right, -1 if left.
    
 The spacing and placement of returns don't matter.  Integers only.
 If there are n crossings, they must be named 0..n-1.
