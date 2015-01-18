@@ -1,7 +1,7 @@
 # libhomfly
 ## Library to compute the homfly polynomial of a link.
 
-This is basically a conversion of the [program][1] writen by Robert J Jenkins Jr into a shared library. It accepts as entry a character string, formated in the same way as the input files that the original code (see below). The returned value is the string that the original value did print on screen.
+This is basically a conversion of the [program][1] writen by Robert J Jenkins Jr into a shared library. It accepts as entry a character string, formated in the same way as the input files that the original code used (see below). The returned value is the string that the original program did print on screen.
 
 The modifications done to the original program are:
 
@@ -46,7 +46,6 @@ int main()
     char input[] = " 1 6 0 1 1 -1  2 1  0 -1  1 1  2 -1 0 1 1 1 2 1 ";
     out = homfly(input);
     printf("%s", out);
-    //free(out);
     return 0;
 }
 ``````````````````````````````````````````````````````````````````````````````````````````
