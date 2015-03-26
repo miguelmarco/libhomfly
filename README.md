@@ -22,13 +22,30 @@ The modifications done to the original program are:
 
 ### Instalation
 
-Just running
+Type
+
 
 ````
-make 
+autoreconf --install 
 ````
 
-should compile the library. Then just copy the header homfly.h to your headers directory (in linux, it is usually /usr/include/) and the file libhomfly.so to your library directory (in linux /usr/lib/).
+to generate the config script. Then run
+
+
+````
+./configure
+make
+````
+
+to build the library. Finally, as superuser run
+
+
+````
+make install
+````
+
+to install it. The autoreconf command should be in the autotools package.
+
 
 ### Example of usage
 
