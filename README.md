@@ -18,7 +18,7 @@ The modifications done to the original program are:
 ### Dependencies
 
 * standard c library
-* boehmgc 
+* boehmgc
 
 ### Instalation
 
@@ -26,7 +26,7 @@ Type
 
 
 ````
-autoreconf --install 
+autoreconf --install
 ````
 
 to generate the config script. Then run
@@ -67,8 +67,6 @@ int main()
 }
 ``````````````````````````````````````````````````````````````````````````````````````````
 
-Note that, in order to compile it, you need to have the boehm garbage collector library available, and compile the program with the -lgc option.
-
 ### Input format
 
 Links are represented by a string with numbers separated by spaces as follows
@@ -77,7 +75,7 @@ Links are represented by a string with numbers separated by spaces as follows
  * for each string, how many crossings, then
    * for each crossing, the cross name, then 1 if over, -1 if under
 * for each crossing, the name of the crossing and 1 if right, -1 if left.
-   
+
 The spacing and placement of returns don't matter.  Integers only.
 If there are n crossings, they must be named 0..n-1.
 

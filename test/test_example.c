@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "homfly.h"
-#include <gc.h>
 
 int main()
 {
