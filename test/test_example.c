@@ -6,7 +6,7 @@ int main()
 {
     char *out;
     char input[] = " 1 6 0 1 1 -1  2 1  0 -1  1 1  2 -1 0 1 1 1 2 1 ";
-    out = homfly(input);
+    out = homfly_str(input);
     printf("%s", out);
     if (out == " - L^-4 - 2L^-2 + M^2L^-2")
     {

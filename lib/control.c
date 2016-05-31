@@ -188,7 +188,7 @@ static void c_do_one_weave(
 ------------------------------------------------------------------------------
 */
 
-Poly* c_follow(Instruct *l, word num_crossings)
+Poly *c_follow(Instruct *l, word num_crossings)
 {
   word       i, j, k;
   ub4        oldfact;
@@ -267,47 +267,4 @@ Poly* c_follow(Instruct *l, word num_crossings)
 
   /*-------------------------------------------- Return the final polynomial */
   return &oldweaves->tag;
-}
-
-
-char *homfly(char *argv)
-{
-  crossing  *link;          /* link for which to calculate HOMFLY polynomial */
-  Poly      *answer;              /* HOMFLY polynomial for the original link */
-  word       num_crossings;                   /* number of crossings in link */
-  word       common_sense;
-  char      *out;
-  Instruct  *plan[1];                                /* list of instructions */
-
-  //c_init();                                          /* initialize variables */
-  k_read(&num_crossings, &link, argv);                          /* read link */
-
-  answer = c_homfly(link, num_crossings);
-  out = p_show(answer);                               /* display the answer */
-  //free((char *)*knot);
-  //free((char *)*plan);
-  //p_kill(answer);
-  /* If you want to be thorough, free the polynomials defined in c_init */
-
-  //free (llplus.term);
-  //free (lplusm.term);
-  //free (lminusm.term);
-  //free (llminus.term);
-  //free (mll.term);
-
-  return out;
-
-}
-
-/**
- * Compute the homfly polynomial and return the result as the polynomial answer.
- */
-Poly* c_homfly(crossing *link, word num_crossings)
-{
-  Instruct  *plan[1];                                /* list of instructions */
-
-  c_init();                                          /* initialize variables */
-
-  o_make(link, num_crossings, plan);     /* make plan for attacking the link */
-  return c_follow(*plan, num_crossings);                  /* follow the plan */
 }
