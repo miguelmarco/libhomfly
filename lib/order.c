@@ -250,7 +250,7 @@ static void o_one_make(word      *n,
 
 /*  Make complete instructions for handling all the crossings */
 void o_make(crossing  *k,
-            word       crossings,
+            word       num_crossings,
             Instruct **list)
 {
   word       order1[MAXCROSS];                         /* order of crossings */
@@ -261,12 +261,12 @@ void o_make(crossing  *k,
              n;
   Instruct  *l;
 
-  l = (Instruct *)GC_MALLOC(sizeof(Instruct)*crossings);
-  for (i = 0; i < crossings; order1[i] = i, i++) ;
-  for (i = 0; i < crossings; order2[i] = i, i++) ;
-  o_order2(k, order2, order1, crossings);
-  o_order1(k, order1, order2, crossings);
-  o_order1(k, order2, order1, crossings);
+  l = (Instruct *)GC_MALLOC(sizeof(Instruct)*num_crossings);
+  for (i = 0; i < num_crossings; order1[i] = i, i++) ;
+  for (i = 0; i < num_crossings; order2[i] = i, i++) ;
+  o_order2(k, order2, order1, num_crossings);
+  o_order1(k, order1, order2, num_crossings);
+  o_order1(k, order2, order1, num_crossings);
   boundary[0] = k[order1[0]].o;
   boundary[1] = k[order1[0]].o->z;
   going_in[0] = 1;
@@ -274,7 +274,7 @@ void o_make(crossing  *k,
   n           = 2;
 
 
-  for (i = 0; i < crossings; i++)
+  for (i = 0; i < num_crossings; i++)
   {
     o_one_make(&n, boundary, going_in, k, order1[i], (l+i));
     // printf("going in: ");
@@ -288,7 +288,7 @@ void o_make(crossing  *k,
 }
 
 
-/*void o_show(Instruct *l, word crossings)
+/*void o_show(Instruct *l, word num_crossings)
 {
   word  i;
   word  j;

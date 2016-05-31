@@ -33,10 +33,10 @@ void   c_init(void);                        /* Initialize global polynomials */
 void   c_handle(word *list, struct weave *thisweave, struct weave *newweaves);
 
 /* c_follow: Follow all instructions, return the poly for the original link */
-void   c_follow(Instruct *l, word crossings, Poly *answer);
+Poly* c_follow(Instruct *l, word num_crossings);
 
 /* c_homfly: Compute the homfly polynomial for the link */
-void   c_homfly(crossing *link, Poly *answer);
+Poly* c_homfly(crossing *link, word num_crossings);
 
 #endif /* ifndef CONTROL */
 

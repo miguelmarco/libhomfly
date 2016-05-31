@@ -39,9 +39,9 @@ typedef struct Instruct Instruct;
 
 /* Procedures defined in order.c */
 
-void   o_make(crossing *k, word crossings, Instruct **list);
+void   o_make(crossing *k, word num_crossings, Instruct **list);
                                                         /* make instructions */
-/*void   o_show(Instruct *l, word crossings);*/
+/*void   o_show(Instruct *l, word num_crossings);*/
                                                  /* display all instructions */
 
 

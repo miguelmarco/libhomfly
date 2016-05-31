@@ -62,7 +62,7 @@ if (1) \
 
 boolean p_check(Poly *p);                 /* check if a poly is a power of -2 */
 void    p_copy(Poly *inp, Poly *outp);                       /* copies a Poly */
-char    *p_show(Poly *l);                                 /* displays the Poly */
+char   *p_show(Poly *l);                                 /* displays the Poly */
 void    p_add(Poly *inp1, Poly *inp2, Poly *outp);          /* adds two Polys */
 void    p_mult(Poly *inp1, Poly *inp2, Poly *outp);     /* multiply two Polys */
 

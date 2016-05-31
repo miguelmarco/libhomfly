@@ -53,10 +53,10 @@ typedef struct crossing crossing;
 /* Procedures defined in knot.c */
 
 /* Display a whole knot */
-void k_show(word crossings, crossing  *k);
+void k_show(word num_crossings, crossing  *k);
 
 /* Read a knot file */
-boolean k_read(word *crossings, crossing **k, char *filename);
+boolean k_read(word *num_crossings, crossing **k, char *filename);
 
 
 #endif /* ifndef KNOT */
