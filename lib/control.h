@@ -5,24 +5,20 @@
 ------------------------------------------------------------------------------
 */
 
-#ifndef POLY
-# include "poly.h"
-#endif
-#ifndef ORDER
-# include "order.h"
-#endif
-
 #ifndef CONTROL
 #define CONTROL
 
+# include "poly.h"
+# include "order.h"
+
 /* Global variables */
 
-instruct   plan;       /* plan of what to do to each old weave for this step */
-poly       llplus;                                                   /* -L^2 */
-poly       lplusm;                                                    /* -LM */
-poly       lminusm;                                              /* -(L^-1)M */
-poly       llminus;                                                 /* -L^-2 */
-poly       mll;                                       /* (M^-1)(-(L^-1) - L) */
+Instruct   plan;       /* plan of what to do to each old weave for this step */
+Poly       llplus;                                                   /* -L^2 */
+Poly       lplusm;                                                    /* -LM */
+Poly       lminusm;                                              /* -(L^-1)M */
+Poly       llminus;                                                 /* -L^-2 */
+Poly       mll;                                       /* (M^-1)(-(L^-1) - L) */
 ub4        total_weaves_handled;             /* how much work has been done? */
 
 /*
@@ -37,7 +33,10 @@ void   c_init(void);                        /* Initialize global polynomials */
 void   c_handle(word *list, struct weave *thisweave, struct weave *newweaves);
 
 /* c_follow: Follow all instructions, return the poly for the original link */
-void   c_follow(struct instruct *l, word crossings, struct poly **answer);
+void   c_follow(Instruct *l, word crossings, Poly *answer);
+
+/* c_homfly: Compute the homfly polynomial for the link */
+void   c_homfly(crossing *link, Poly *answer);
 
 #endif /* ifndef CONTROL */
 

@@ -16,46 +16,33 @@
 /*  A program by Bob Jenkins, Spring 1989 */
 #include <stdlib.h>
 #include <gc.h>
-#ifndef STANDARD
+
 #include "standard.h"
-#endif
-#ifndef POLY
 #include "poly.h"
-#endif
-#ifndef ORDER
 #include "order.h"
-#endif
-#ifndef BOUND
 #include "bound.h"
-#endif
-#ifndef CONTROL
 #include "control.h"
-#endif
-#ifndef MODEL
 #include "model.h"
-#endif
 
 /* Since models are used only underneath the routines that create them,
    the memory they use actually comes from local variables.  This cuts
    down the time and space for memory allocation/deallocation incredibly. */
 
 /* Create a copy of the weave modeled in model1 in model2. */
-static void   m_copy(node **model1,
-		     node **model2,
-		     char  *mem)
+static void m_copy(node **model1, node **model2, char  *mem)
 {
   word   i;
   word   offset = 0;
   node  *nodemem = (node *)mem;
-  node  *this,
+  node  *cur,
         *t;
   node  *tab[BIGWEAVE][BIGWEAVE];
 
   for (i = 0; i < newcross; i++)
   {
-    for (this = model1[i]; this != 0; this = this->z)
+    for (cur = model1[i]; cur != 0; cur = cur->z)
     {
-      tab[this->o1][this->o2] = 0;
+      tab[cur->o1][cur->o2] = 0;
     }
   }
   for (i = 0; i < newcross; i++)
@@ -63,23 +50,23 @@ static void   m_copy(node **model1,
     if (model1[i] != 0)
     {
       model2[i] = (node *)(&nodemem[offset++]);
-      this      = model1[i];
+      cur       = model1[i];
       t         = model2[i];
-      while (this != 0)
+      while (cur != 0)
       {
-        *t = *this;
+        *t = *cur;
         if (tab[t->o1][t->o2] != 0)
         {
           t->m    = tab[t->o1][t->o2];
           t->m->m = t;
         }
         else tab[t->o1][t->o2] = t;
-        if (this->z != 0)
+        if (cur->z != 0)
         {
           t->z = (node *)(&nodemem[offset++]);
         }
         else t->z = 0;
-        this = this->z;
+        cur  = cur->z;
         t    = t->z;
       }
     }
@@ -103,8 +90,7 @@ void   m_show(node **model)
    string.  This reduces the complexity of the model.  */
 static void   m_string_kill(node **model, word where)
 {
-  word   i,
-         done;
+  word   i, done;
   node  *t;
 
   for (i = newcross; --i >= 0;)
@@ -115,21 +101,19 @@ static void   m_string_kill(node **model, word where)
       {
         done = !model[i]->z;
         if (model[i]->m->self == where)
-        {
           model[i] = model[i]->z;
-        }
-        else done = 1;
+        else
+          done = 1;
       }
       if (model[i])
       {
         for (t = model[i]; t->z;)
         {
           if (t->z->m->self == where)
-          {
-	    t->z = t->z->z;
-          }
-	  else t = t->z;
-	}
+            t->z = t->z->z;
+          else
+            t = t->z;
+        }
       }
     }
   }
@@ -143,7 +127,7 @@ static void   m_string_kill(node **model, word where)
    of the string which is the input.  m_before() is concerned with the former
    order, while the rest of this project cares mostly about the latter order.
    Thus all the (list[a] < a), *backwards*, and so on in this routine.   */
-static word  m_before(word x, word a, word b, word *list)
+static word m_before(word x, word a, word b, word *list)
 {
   word  backwards;
 
@@ -161,7 +145,7 @@ static word  m_before(word x, word a, word b, word *list)
 
 /* Put the crossings in the simple weave being modeled in the correct places.
    This is called "a simple weave in standard form" in my thesis.  */
-static void   m_sort(word i, node **model, word *list)
+static void m_sort(word i, node **model, word *list)
 /*  This assumes that the weave is simple */
 {
   word   done = 0;
@@ -189,11 +173,9 @@ static void   m_sort(word i, node **model, word *list)
 
 
 /* Are the correct strings overpasses in all the crossings of this string? */
-static void   m_correct(node **model, word string)
+static void m_correct(node **model, word string)
 {
   node  *t;
-
-
 
   for (t = model[string]; t != 0; t = t->z)
   {
@@ -208,10 +190,9 @@ static void   m_correct(node **model, word string)
 
 
 /* Break, as in the HOMFLY recursion formula */
-static void   m_k_break(node **at, node **bt)
+static void m_k_break(node **at, node **bt)
 {
-  word   a,
-         b;
+  word   a, b;
   node  *c;
 
   a   = (*at)->self;
@@ -226,7 +207,7 @@ static void   m_k_break(node **at, node **bt)
 
 
 /* Switch, as in the HOMFLY recursion formula */
-static void   m_k_switch(node *at, node *bt)
+static void m_k_switch(node *at, node *bt)
 {
   at->right   = !at->right;
   at->over    = !at->over;
@@ -252,10 +233,10 @@ static void   m_k_switch(node *at, node *bt)
    the crossings should be.  If two strings cross, the string with the lower
    input should be the overpass.
 */
-static void    m_recurse(node  **model,
-			 word   *list,
-			 weave  *oldweave,
-			 weave *newweaves)
+static void m_recurse(node  **model,
+                      word   *list,
+                      weave  *oldweave,
+                      weave *newweaves)
 {
   word    i,
           j,
@@ -270,7 +251,7 @@ static void    m_recurse(node  **model,
         **t2,
          *model2[BIGWEAVE];
   weave   other[1];
-  poly    temp[1];
+  Poly    temp[1];
 
   /* remove strings lying below everything interesting */
   for (mbot = newcross; --mbot >= 0;)
@@ -310,7 +291,8 @@ static void    m_recurse(node  **model,
       for (t = model2[msecond]; t->z->m != (*t2); t = t->z) ;
       m_k_break(&(t->z), t2);
     }
-    else m_k_break(&model2[msecond], t2);
+    else
+      m_k_break(&model2[msecond], t2);
     m_correct(model2, mfirst);
     m_correct(model2, msecond);
 
@@ -343,10 +325,10 @@ static void    m_recurse(node  **model,
 
 
 
-static void   m_add(node **model,   /* original weave */
-		    node *t,        /* crossing to add to the weave */
-		    word  *list,    /* mapping of inputs to outputs */
-		    word where)     /* where to add the crossing */
+static void m_add(node **model,   /* original weave */
+                  node *t,        /* crossing to add to the weave */
+                  word  *list,    /* mapping of inputs to outputs */
+                  word where)     /* where to add the crossing */
 {
   node  *temp;
 
@@ -373,10 +355,10 @@ static void   m_add(node **model,   /* original weave */
 
 
 static void m_shrink(word *list,
-		     node  **model,
-		     weave  *oldweave)
+                     node  **model,
+                     weave  *oldweave)
 {
-  poly   blank;
+  Poly   blank;
   word   this,
          that,
          i,
@@ -429,9 +411,9 @@ static void m_shrink(word *list,
 
 
 
-static void   m_switch(word *list,
-		       node **model,
-		       char  *mem)
+static void m_switch(word *list,
+                     node **model,
+                     char  *mem)
 {
   word   i,
          temp[BIGWEAVE],
@@ -515,12 +497,9 @@ void   m_make(word  *list,
 	      node **model,
 	      char  *mem)
 {
-  word   i,
-         j,
-         temp;
+  word   i, j, temp;
   word   offset = 0;
-  node  *a,
-        *b;
+  node  *a, *b;
   node  *nodemem = (node *)mem;
 
   for (i = 0; i < oldcross; ++i) model[i] = 0;/* null terminate every string */
@@ -561,9 +540,7 @@ void   m_make(word  *list,
   for (i = 0; i < oldcross; ++i)
   {
     if (model[i])
-    {
       m_sort(i, model, list);
-    }
   }
 }
 
@@ -576,9 +553,9 @@ Construct a model of the weave and systematically apply the recursion formula
 to it.  Whenever you get new simple weaves, c_handle them.
 ------------------------------------------------------------------------------
 */
-void    m_model_weave(word   *list,
-		      weave  *oldweave,
-		      weave  *newweaves)
+void m_model_weave(word   *list,
+                   weave  *oldweave,
+                   weave  *newweaves)
 {
   node  *model[BIGWEAVE];
   char   mem[BIGMODEL];

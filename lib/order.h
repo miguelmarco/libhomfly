@@ -7,18 +7,12 @@
 ------------------------------------------------------------------------------
 */
 
-#ifndef STANDARD
-#include "standard.h"
-#endif
-#ifndef BOUND
-#include "bound.h"
-#endif
-#ifndef KNOT
-#include "knot.h"
-#endif
-
 #ifndef ORDER
 #define ORDER
+
+#include "standard.h"
+#include "bound.h"
+#include "knot.h"
 
 /*  Something of type INSTRUCT can describes manipulations of a weave boundary.
     There are two types of manipulations:  adding a crossing connected by one
@@ -27,7 +21,7 @@
     Something of type struct INSTRUCT can store one added crossing
         and 9 boundary removals. */
 
-struct instruct
+struct Instruct
 {
   word  crossing;                                 /* which crossing is added */
   word  which;     /* which arc to add the crossing at (-1 for just removal) */
@@ -41,13 +35,13 @@ struct instruct
   word  r0[MAXSTRING+1];               /* first boundary crossing to connect */
   word  r1[MAXSTRING+1];              /* second boundary crossing to connect */
 };
-typedef struct instruct   instruct;
+typedef struct Instruct Instruct;
 
 /* Procedures defined in order.c */
 
-void   o_make(crossing *k, word crossings, instruct **list);
+void   o_make(crossing *k, word crossings, Instruct **list);
                                                         /* make instructions */
-void   o_show(instruct *l, word crossings);
+/*void   o_show(Instruct *l, word crossings);*/
                                                  /* display all instructions */
 
 

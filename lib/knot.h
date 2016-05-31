@@ -23,11 +23,11 @@
    3  1
 ------------------------------------------------------------------------------
 */
-#ifndef STANDARD
-# include "standard.h"
-#endif
+
 #ifndef KNOT
 #define KNOT
+
+#include "standard.h"
 /*
 ------------------------------------------------------------------------------
     The set of crossings for a dllink is represented by an array of
@@ -44,7 +44,7 @@ struct crossing
   struct dllink *u;                                             /* underpass */
   int      hand; /* 1 if right handed, -1 if left, 0 if no longer a crossing */
 };
-typedef struct crossing   crossing;
+typedef struct crossing crossing;
 
 
 /* maximum number of crossings in a knot */
@@ -53,10 +53,10 @@ typedef struct crossing   crossing;
 /* Procedures defined in knot.c */
 
 /* Display a whole knot */
-void   k_show(int  crossings, struct crossing  *k); 
+void k_show(word crossings, crossing  *k);
 
 /* Read a knot file */
-word   k_read(int *crossings, struct crossing **k, char *filename);
+boolean k_read(word *crossings, crossing **k, char *filename);
 
 
 #endif /* ifndef KNOT */

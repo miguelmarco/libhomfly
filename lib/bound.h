@@ -7,15 +7,11 @@ BOUND.H
 ---------------------------------------------------------------------------
 */
 
-#ifndef STANDARD
-# include "standard.h"
-#endif
-#ifndef POLY
-# include "poly.h"
-#endif
-
 #ifndef BOUND
 #define BOUND
+
+#include "standard.h"
+#include "poly.h"
 
 #define MAXSTRING 12
 #define BIGWEAVE (2*MAXSTRING+2)
@@ -42,9 +38,9 @@ BOUND.H
 struct weave
 {
   ub4    boundary[2];       /* Representation of the weave, heavily encoded. */
-  poly   tag;        /* Polynomial associated with link represented by weave */
+  Poly   tag;        /* Polynomial associated with link represented by weave */
 };
-typedef struct weave   weave;
+typedef struct weave weave;
 
 /*
 ---------------------------------------------------------------------------
@@ -70,7 +66,7 @@ word       newin;                       /* number of inputs to the new weave */
 ---------------------------------------------------------------------------
 */
 
-/* Manipulate those variables whose values are universal to all weaves at a 
+/* Manipulate those variables whose values are universal to all weaves at a
    given step.  (These are the global variables declared above).  */
 void   b_manip(weave *oldweaves);
 

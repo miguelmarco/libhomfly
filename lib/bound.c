@@ -8,18 +8,11 @@
 */
 #include <stdlib.h>
 #include <gc.h>
-#ifndef STANDARD
+
 #include "standard.h"
-#endif
-#ifndef ORDER
 #include "order.h"
-#endif
-#ifndef CONTROL
 #include "control.h"
-#endif
-#ifndef BOUND
 #include "bound.h"
-#endif
 
 /*
 ------------------------------------------------------------------------------
@@ -28,7 +21,7 @@ A step is either adding a crossing, adding a crossing and removing a pair of
 boundary crossings, or just removing a pair of boundary crossings.
 ------------------------------------------------------------------------------
 */
-void       b_manip(weave *oldweaves)
+void b_manip(weave *oldweaves)
 {
   extern word list[BIGWEAVE];              /* description of first new weave */
   extern word list2[BIGWEAVE];           /* description of second, if needed */
@@ -156,11 +149,10 @@ Either the crossing is correct, in which case *one* will be set, or it is
 wrong.  In this case no more than two weaves are needed, so *two* will be set.
 ------------------------------------------------------------------------------
 */
-void   b_no_pairs(
-  word  *list,  /* list of original inputs/outputs, modified by this routine */
-  word  *list2,                    /* inputs/outputs of the second new weave */
-  word  *one,                                 /* will one new weave suffice? */
-  word  *two)                                /* will two new weaves suffice? */
+void  b_no_pairs(word  *list,  /* list of original inputs/outputs, modified by this routine */
+                 word  *list2,                    /* inputs/outputs of the second new weave */
+                 word  *one,                                 /* will one new weave suffice? */
+                 word  *two)                                /* will two new weaves suffice? */
 {
   word  i,
         a,
@@ -200,7 +192,7 @@ crossings.  This may require replacing the original weave with one, two, or
 more new weaves.  If more than two are needed, do not set *one* or *two*.
 ------------------------------------------------------------------------------
 */
-void   b_one_pair(list, list2, one, two)
+void b_one_pair(list, list2, one, two)
 word  *list;    /* list of original inputs/outputs, modified by this routine */
 word  *list2;                      /* inputs/outputs of the second new weave */
 word  *one;                                   /* will one new weave suffice? */

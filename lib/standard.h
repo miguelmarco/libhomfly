@@ -5,14 +5,16 @@ Standard definitions and types, Bob Jenkins
 */
 #ifndef STANDARD
 # define STANDARD
+
 # ifndef STDIO
 #  include <stdio.h>
 #  define STDIO
-# endif
+# endif /* STDIO */
+
 # ifndef STDDEF
 #  include <stddef.h>
 #  define STDDEF
-# endif
+# endif /* STDDEF */
 typedef  unsigned long long  ub8;
 #define UB8MAXVAL 0xffffffffffffffffLL
 #define UB8BITS 64
@@ -34,22 +36,28 @@ typedef  unsigned       char ub1;
 typedef    signed       char sb1;   /* signed 1-byte quantities */
 #define SB1MAXVAL 0x7f
 typedef                 int  word;  /* fastest type available */
+typedef                 int  boolean;
 
 #define bis(target,mask)  ((target) |=  (mask))
 #define bic(target,mask)  ((target) &= ~(mask))
 #define bit(target,mask)  ((target) &   (mask))
+
 #ifndef min
 # define min(a,b) (((a)<(b)) ? (a) : (b))
 #endif /* min */
+
 #ifndef max
 # define max(a,b) (((a)<(b)) ? (b) : (a))
 #endif /* max */
+
 #ifndef align
 # define align(a) (((ub4)a+(sizeof(void *)-1))&(~(sizeof(void *)-1)))
 #endif /* align */
+
 #ifndef abs
 # define abs(a)   (((a)>0) ? (a) : -(a))
 #endif
+
 #define TRUE  1
 #define FALSE 0
 #define SUCCESS 0  /* 1 on VAX */

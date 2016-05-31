@@ -7,15 +7,10 @@
 #include <stdlib.h>
 #include <gc.h>
 #include <string.h>
-#ifndef STANDARD
+
 #include "standard.h"
-#endif
-#ifndef DLLINK
 #include "dllink.h"
-#endif
-#ifndef KNOT
 #include "knot.h"
-#endif
 
 /*
 ------------------------------------------------------------------------------
@@ -24,14 +19,11 @@
   After that, it displays the HANDedness of each crossing.
 ------------------------------------------------------------------------------
 */
-void       k_show(word crossings,
-		  crossing  *k)
+void k_show(word crossings, crossing  *k)
 {
-  word   i,
-         j;
+  word   i, j;
   word   tab[MAXCROSS];
-  dllink  *count,
-        *start;
+  dllink  *count, *start;
 
   for (i = 0; i < crossings; i++) tab[i] = 0;
   for (j = 0; j < 2; j++)
@@ -75,12 +67,7 @@ void       k_show(word crossings,
     }
   }
 
-
-
-
 }
-
-
 
 
 /*
@@ -88,9 +75,7 @@ void       k_show(word crossings,
   Assumes the file given by the user exists and contains a legal knot.
 ------------------------------------------------------------------------------
 */
-word       k_read(word *crossings,
-		  crossing **kk,
-		  char *filename)
+boolean k_read(word *crossings, crossing **kk, char *filename)
 {
   char       name[20];
   word       links,
@@ -116,8 +101,10 @@ word       k_read(word *crossings,
   {
     fscanf(f, "%d ", crossings);
     fscanf(f, "%d %d ", &startwhere, &startover);
-    if (startover == 1) l_add((dllink *)0, startwhere, &k[startwhere].o);
-    else l_add((dllink *)0, startwhere, &k[startwhere].u);
+    if (startover == 1)
+      l_add((dllink *)0, startwhere, &k[startwhere].o);
+    else
+      l_add((dllink *)0, startwhere, &k[startwhere].u);
     for (j=1; j<*crossings; ++j)
     {
       fscanf(f, "%d %d ", &where, &over);
@@ -131,13 +118,17 @@ word       k_read(word *crossings,
       }
       if (over == 1)
       {
-        if (startover == 1) l_add(k[startwhere].o, where, &k[where].o);
-        else l_add(k[startwhere].u, where, &k[where].o);
+        if (startover == 1)
+          l_add(k[startwhere].o, where, &k[where].o);
+        else
+          l_add(k[startwhere].u, where, &k[where].o);
       }
       else
       {
-        if (startover == 1) l_add(k[startwhere].o, where, &k[where].u);
-        else l_add(k[startwhere].u, where, &k[where].u);
+        if (startover == 1)
+          l_add(k[startwhere].o, where, &k[where].u);
+        else
+          l_add(k[startwhere].u, where, &k[where].u);
       }
     }
   }
@@ -155,14 +146,8 @@ word       k_read(word *crossings,
   /* check that every crossing has an overpass and underpass */
   for (i = 0; i < (*crossings); i++)
   {
-    if (!k[i].o) return FALSE;
-    else if (!k[i].u) return FALSE;
-    else if ((k[i].hand != 1) && (k[i].hand != -1))
-    {
+    if (!k[i].o || !k[i].u || !(k[i].hand == 1 || k[i].hand == -1))
       return FALSE;
-    }
-    else continue;
-    return FALSE;
   }
   return TRUE;
 }

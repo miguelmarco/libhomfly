@@ -7,17 +7,13 @@
 ---------------------------------------------------------------------------
 */
 
-#ifndef STANDARD
-# include "standard.h"
-#endif
-#ifndef BOUND
-# include "bound.h"
-#endif
-
 #ifndef MODEL
 #define MODEL
 
-/*  When weaves are complicated enough to need modeling, a model of them is 
+# include "standard.h"
+# include "bound.h"
+
+/*  When weaves are complicated enough to need modeling, a model of them is
     made using singly linked lists of type node.  Something of type node
     is a single node in a string in a weave. */
 
