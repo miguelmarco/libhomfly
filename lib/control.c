@@ -51,9 +51,7 @@ void c_handle(word *list,   /* matching of inputs/outputs in thisweave */
 /*  This is one of the most used procedures in this program */
 {
   Poly   temp[1];
-  word   i;
-  word   j;
-  word   k;
+  word   i, j, k;
   word   sum;
   word   prod;
   word   count;
@@ -69,7 +67,7 @@ void c_handle(word *list,   /* matching of inputs/outputs in thisweave */
     while (!going_in[--j]);
     inputs[i] = list[j];
     k = (i < 6) ? 0 : 1;
-    boundary[k] = inputs[i]+(boundary[k] << 5);
+    boundary[k] = inputs[i] + (boundary[k] << 5);
   }
 
   /*  Determine this weave's index in the array of newweaves */
@@ -80,7 +78,7 @@ void c_handle(word *list,   /* matching of inputs/outputs in thisweave */
     prod *= i;
     count = 0;
     for (j = i, k = inputs[i]; --j >= 0;) if (k > inputs[j]) ++count;
-    sum += count*prod;
+    sum += count * prod;
   }
 
   newweaves[sum].boundary[0] = boundary[0];
@@ -98,28 +96,23 @@ static void c_do_one_weave(
    weave *oldweave,         /* the single weave to apply the instructions to */
    weave *newweaves)                          /* the array of all new weaves */
 {
-  word    one;
-  word    two;
-  word    i;
-  word    j;
-  word    k;
+  word    one = 0;
+  word    two = 0;
+  word    i, j, k;
   ub4     boundary[2];
   weave   other[1];
   Poly    temp[1];
 
-  one   = 0;
-  two   = 0;
   /*-------------------------------------------------- undecode the boundary */
   boundary[0] = oldweave->boundary[0];
   boundary[1] = oldweave->boundary[1];
-  for (j = 0, i = 0; i < oldin; i++)
+  for (j = 0, i = 0; i < oldin; ++i, ++j)
   {
     while (!old_going_in[j]) j++;                     /* find the next input */
     k = (i < 6) ? 0 : 1;
     list[j]       = boundary[k] & 0x1f;                /* set boundary input */
     boundary[k] >>= 5;
     list[list[j]] = j;                                /* set boundary output */
-    j++;
   }
 
 
@@ -188,13 +181,12 @@ static void c_do_one_weave(
 ------------------------------------------------------------------------------
 */
 
-Poly *c_follow(Instruct *l, word num_crossings)
+Poly *c_follow(Instruct *l, int num_crossings)
 {
   word       i, j, k;
   ub4        oldfact;
   ub4        newfact;
-  weave     *oldweaves,
-            *newweaves;
+  weave     *oldweaves, *newweaves;
   extern Instruct plan;
 
   /*---------------------------------------------- Set up the starting weave */
@@ -206,7 +198,7 @@ Poly *c_follow(Instruct *l, word num_crossings)
          &oldweaves->tag);                      /* tag of original link is 1 */
 
   /*-------------- For each crossing, follow the instructions on every weave */
-  for (i = 0; i < num_crossings; i++)
+  for (i = 0; i < num_crossings; ++i)
   {
     /*----- Handle adding the crossing, plus the first boundary pair removal */
     plan            = l[i];
@@ -214,14 +206,14 @@ Poly *c_follow(Instruct *l, word num_crossings)
     plan.newn       = plan.oldn + 2 - 2*plan.reductions;
     b_manip(oldweaves);
     for (j = 2, newfact = 1; j <= newin; newfact *= (j++)) ;
-    newweaves = (weave *)GC_MALLOC((sizeof(weave))*newfact);
+    newweaves = (weave *)GC_MALLOC(sizeof(weave) * newfact);
     for (j = 0; j < newfact;) newweaves[j++].tag.len = 0;
     for (j = 2, oldfact = 1; j <= oldin; oldfact *= (j++)) ;
     for (j = 0; j < oldfact; ++j)
     {
       if (oldweaves[j].tag.len)
       {
-        c_do_one_weave((oldweaves+j), newweaves);
+        c_do_one_weave(oldweaves + j, newweaves);
       }
     }
     //free((char *)oldweaves);
@@ -238,15 +230,15 @@ Poly *c_follow(Instruct *l, word num_crossings)
     /*----------- Remove any other pairs of boundary crossings one at a time */
     for (k = 1; k < l[i].reductions; ++k)
     {
-      oldfact   = newfact;
-      plan.which = (-1);
+      oldfact    = newfact;
+      plan.which = -1;
       plan.r0[0] = l[i].r0[k];
       plan.r1[0] = l[i].r1[k];
       plan.oldn  = plan.newn;
       plan.newn -= 2;
       b_manip(oldweaves);
       newfact   = oldfact / oldin;
-      newweaves = (weave *)GC_MALLOC((sizeof(weave))*newfact);
+      newweaves = (weave *)GC_MALLOC(sizeof(weave) * newfact);
       for (j = 0; j < newfact;) newweaves[j++].tag.len = 0;
       for (j = 0; j < oldfact; j++)
       {

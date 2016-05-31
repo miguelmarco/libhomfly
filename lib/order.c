@@ -23,13 +23,13 @@ if (1) \
   (t)[(k)->u->z->c] -= 1; \
 } else
 
+/*  This assumes that every crossing is used.
+    This lists the crossings in an order my algorithm will hopefully like. */
 static void o_order2(
     crossing  *k,
     word      *oldorder,
     word      *order,
     word       crossings)
-/*  This assumes that every crossing is used.
-    This lists the crossings in an order my algorithm will hopefully like. */
 {
   word       tab[MAXCROSS];
   word       j,
@@ -67,13 +67,12 @@ static void o_order2(
 }
 
 
-
+/*  This assumes that every crossing is used.
+    This lists the crossings in an order my algorithm will hopefully like. */
 static void o_order1(crossing  *k,
                      word      *oldorder,
                      word      *order,
                      word       crossings)
-/*  This assumes that every crossing is used.
-    This lists the crossings in an order my algorithm will hopefully like. */
 {
   word       tab[MAXCROSS];
   word       j,
@@ -105,7 +104,9 @@ static void o_order1(crossing  *k,
   }
 }
 
-/* Make instructions for just adding a crossing to the solved region */
+/**
+ * Make instructions for just adding a crossing to the solved region
+ */
 static void o_add(word      *n,         /* in/out: the number of strings in the weave */
                   dllink   **boundary,
                   word      *going_in,  /* in/out: which strings are inputs */
@@ -179,7 +180,9 @@ static void o_add(word      *n,         /* in/out: the number of strings in the 
 }
 
 
-/* Make instructions for removing one pair of boundary crossings */
+/**
+ * Make instructions for removing one pair of boundary crossings
+ */
 static void o_delete(word      *n,
                      dllink   **boundary,
                      word      *going_in,
@@ -249,19 +252,18 @@ static void o_one_make(word      *n,
 
 
 /*  Make complete instructions for handling all the crossings */
-void o_make(crossing  *k,
-            word       num_crossings,
-            Instruct **list)
+void o_make(Link *link, Instruct **list)
 {
-  word       order1[MAXCROSS];                         /* order of crossings */
-  word       order2[MAXCROSS];                 /* another order of crossings */
-  dllink    *boundary[BIGWEAVE];
-  word       going_in[BIGWEAVE];
-  word       i, j,
-             n;
+  word     order1[MAXCROSS];                         /* order of crossings */
+  word     order2[MAXCROSS];                 /* another order of crossings */
+  dllink  *boundary[BIGWEAVE];
+  word     going_in[BIGWEAVE];
+  word     i, j, n;
+  int num_crossings = link->num_crossings;
+  const crossing *k = link->data;
   Instruct  *l;
 
-  l = (Instruct *)GC_MALLOC(sizeof(Instruct)*num_crossings);
+  l = (Instruct *)GC_MALLOC(sizeof(Instruct) * num_crossings);
   for (i = 0; i < num_crossings; order1[i] = i, i++) ;
   for (i = 0; i < num_crossings; order2[i] = i, i++) ;
   o_order2(k, order2, order1, num_crossings);
@@ -273,17 +275,8 @@ void o_make(crossing  *k,
   going_in[1] = 0;
   n           = 2;
 
-
-  for (i = 0; i < num_crossings; i++)
-  {
+  for (i = 0; i < num_crossings; ++i)
     o_one_make(&n, boundary, going_in, k, order1[i], (l+i));
-    // printf("going in: ");
-    // for (j=0; j<n; ++j) {
-    //   printf("%d ", going_in[j]);
-    // }
-    // printf("\n");
-
-  }
   *list = l;
 }
 

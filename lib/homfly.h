@@ -35,6 +35,6 @@ char *homfly_str(char *argv);
 Poly *homfly(char *argv);
 
 /* c_homfly: Compute the homfly polynomial for the link */
-Poly *c_homfly(crossing *link, word num_crossings);
+Poly *c_homfly(Link *link);
 
 #endif // HOMFLY_H
