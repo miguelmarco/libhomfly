@@ -58,10 +58,10 @@ int main(int argc, char *argv[])
             printf("missing output data");
             return 3;
         }
-        // File ends with both \r\n, so we need to ignore both
-        name[strlen(name)-2] = '\0';
-        input[strlen(input)-2] = '\0';
-        test[strlen(test)-2] = '\0';
+        // File ends with \n, but we need to ignore it
+        name[strlen(name)-1] = '\0';
+        input[strlen(input)-1] = '\0';
+        test[strlen(test)-1] = '\0';
 
         out = homfly_str(input);
         if(strcmp(test, out) != 0)
