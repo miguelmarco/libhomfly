@@ -25,10 +25,43 @@
 #ifndef HOMFLY_H
 #define HOMFLY_H
 
-#include "standard.h"
-#include "knot.h"
-#include "order.h"
-#include "poly.h"
+#ifndef UB4MAXVAL
+typedef int  word; 
+typedef    signed long  int  sb4;
+typedef  unsigned short int  ub2;
+typedef    signed short int  sb2;
+#endif
+
+#ifndef KNOT
+struct crossing
+{
+    struct dllink *o;                                              /* overpass */
+    struct dllink *u;                                             /* underpass */
+    int      hand; /* 1 if right handed, -1 if left, 0 if no longer a crossing */
+};
+
+typedef struct crossing crossing;
+#endif
+
+#ifndef POLY
+struct Term
+{
+    sb4    coef;
+    sb2    m;
+    sb2    l;
+};
+typedef struct Term Term;
+
+
+struct Poly
+{
+    Term  *term;
+    sb4     len;
+};
+typedef struct Poly Poly;
+#endif
+
+
 
 char *homfly_str(char *argv);
 
