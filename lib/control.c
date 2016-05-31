@@ -6,38 +6,25 @@ Public Domain
 */
 #include <stdlib.h>
 #include <gc.h>
-#ifndef STANDARD
+
 #include "standard.h"
-#endif
-#ifndef POLY
 #include "poly.h"
-#endif
-#ifndef KNOT
 #include "knot.h"
-#endif
-#ifndef ORDER
 #include "order.h"
-#endif
-#ifndef BOUND
 #include "bound.h"
-#endif
-#ifndef MODEL
 #include "model.h"
-#endif
-#ifndef CONTROL
 #include "control.h"
-#endif
 
 /* these variables are global, and may be because nobody ever changes them */
-void   c_init()
+void c_init()
 {
-  extern poly   llplus;
-  extern poly   lplusm;
-  extern poly   lminusm;
-  extern poly   llminus;
-  extern poly   mll;
+  extern Poly   llplus;
+  extern Poly   lplusm;
+  extern Poly   lminusm;
+  extern Poly   llminus;
+  extern Poly   mll;
   extern ub4    total_weaves_handled;
-  poly          blank[1];
+  Poly          blank[1];
 
   p_init(blank);
   p_term((-1), 0, 2, blank, &llplus);
@@ -53,9 +40,9 @@ void   c_init()
 }
 
 
-void       c_handle(word *list,   /* matching of inputs/outputs in thisweave */
-		    weave *thisweave,             /* the weave to be handled */
-		    weave *newweaves)                  /* all the new weaves */
+void c_handle(word *list,   /* matching of inputs/outputs in thisweave */
+              weave *thisweave,             /* the weave to be handled */
+              weave *newweaves)                  /* all the new weaves */
 /*  Given a simple weave WEAVE, this figures out what BODY should be,
     and adds the weave to the list NEWWEAVES */
 /*  Rather than keeping a heap or tree of new weaves, I have assumed that every
@@ -63,15 +50,15 @@ void       c_handle(word *list,   /* matching of inputs/outputs in thisweave */
     set of permutations as an index to my array of all possible new weaves. */
 /*  This is one of the most used procedures in this program */
 {
-  poly            temp[1];
+  Poly   temp[1];
   word   i;
   word   j;
   word   k;
   word   sum;
   word   prod;
   word   count;
-  ub4             boundary[2];
-  word            inputs[BIGWEAVE];
+  ub4    boundary[2];
+  word   inputs[BIGWEAVE];
 
   ++total_weaves_handled;
   boundary[0] = 0;
@@ -105,7 +92,6 @@ void       c_handle(word *list,   /* matching of inputs/outputs in thisweave */
 }
 
 
-
 /*  This does all the weave manipulation associated with adding a single
     crossing to a single weave.                                          */
 static void c_do_one_weave(
@@ -119,7 +105,7 @@ static void c_do_one_weave(
   word    k;
   ub4     boundary[2];
   weave   other[1];
-  poly    temp[1];
+  Poly    temp[1];
 
   one   = 0;
   two   = 0;
@@ -138,8 +124,10 @@ static void c_do_one_weave(
 
 
   /*----------------------------------------------- Try to handle it quickly */
-  if (plan.reductions == 0) b_no_pairs(list, list2, &one, &two);
-  else if (plan.which >= 0) b_one_pair(list, list2, &one, &two);
+  if (plan.reductions == 0)
+    b_no_pairs(list, list2, &one, &two);
+  else if (plan.which >= 0)
+    b_one_pair(list, list2, &one, &two);
 
   /*----------------------- Is the old weave replaced by only one new weave? */
   if (one)
@@ -176,7 +164,6 @@ static void c_do_one_weave(
 
 
 
-
 /*
 ------------------------------------------------------------------------------
   NAME:
@@ -201,18 +188,14 @@ static void c_do_one_weave(
 ------------------------------------------------------------------------------
 */
 
-void       c_follow(instruct  *l,
-		    word       crossings,
-		    poly     **answer)
+Poly *c_follow(Instruct *l, word num_crossings)
 {
-  word       i,
-             j,
-             k;
+  word       i, j, k;
   ub4        oldfact;
   ub4        newfact;
   weave     *oldweaves,
             *newweaves;
-  extern instruct plan;
+  extern Instruct plan;
 
   /*---------------------------------------------- Set up the starting weave */
   oldweaves             = (weave *)GC_MALLOC(sizeof(weave));
@@ -223,18 +206,18 @@ void       c_follow(instruct  *l,
          &oldweaves->tag);                      /* tag of original link is 1 */
 
   /*-------------- For each crossing, follow the instructions on every weave */
-  for (i = 0; i < crossings; i++)
+  for (i = 0; i < num_crossings; i++)
   {
     /*----- Handle adding the crossing, plus the first boundary pair removal */
     plan            = l[i];
     plan.reductions = (plan.reductions > 0);
-    plan.newn       = plan.oldn+2-2*plan.reductions;
+    plan.newn       = plan.oldn + 2 - 2*plan.reductions;
     b_manip(oldweaves);
     for (j = 2, newfact = 1; j <= newin; newfact *= (j++)) ;
     newweaves = (weave *)GC_MALLOC((sizeof(weave))*newfact);
     for (j = 0; j < newfact;) newweaves[j++].tag.len = 0;
     for (j = 2, oldfact = 1; j <= oldin; oldfact *= (j++)) ;
-    for (j = 0; j < oldfact; j++)
+    for (j = 0; j < oldfact; ++j)
     {
       if (oldweaves[j].tag.len)
       {
@@ -244,18 +227,16 @@ void       c_follow(instruct  *l,
     //free((char *)oldweaves);
     oldweaves = newweaves;
     // printf("firstbatch\n");
-    for (j = 0; j < newfact; ++j)
+    /*for (j = 0; j < newfact; ++j)
     {
-      break;
       if (newweaves[j].tag.len != 0)
       {
-
-	p_show(&newweaves[j].tag);
+        p_show(&newweaves[j].tag);
       }
-    }
+    }*/
 
     /*----------- Remove any other pairs of boundary crossings one at a time */
-    for (k = 1; k < l[i].reductions; k++)
+    for (k = 1; k < l[i].reductions; ++k)
     {
       oldfact   = newfact;
       plan.which = (-1);
@@ -264,22 +245,19 @@ void       c_follow(instruct  *l,
       plan.oldn  = plan.newn;
       plan.newn -= 2;
       b_manip(oldweaves);
-      newfact   = oldfact/oldin;
+      newfact   = oldfact / oldin;
       newweaves = (weave *)GC_MALLOC((sizeof(weave))*newfact);
       for (j = 0; j < newfact;) newweaves[j++].tag.len = 0;
       for (j = 0; j < oldfact; j++)
+      {
         if (oldweaves[j].tag.len)
         {
           c_do_one_weave((oldweaves+j), newweaves);
         }
+      }
       //free((char *)oldweaves);
       oldweaves = newweaves;
       // printf("reduction %d\n", k);
-      for (j = 0; j < newfact; ++j)
-      {
-          break;
-
-      }
     }
 
     /*------------------------ Gloat about how little work needed to be done */
@@ -287,49 +265,6 @@ void       c_follow(instruct  *l,
   }
 
 
-  /*------------------------------- Deposit the final polynomial in *answer* */
-  *answer = &oldweaves->tag;
+  /*-------------------------------------------- Return the final polynomial */
+  return &oldweaves->tag;
 }
-
-
-char *homfly(char *argv)
-{
-  crossing  *knot[1];       /* link for which to calculate HOMFLY polynomial */
-  instruct  *plan[1];                                /* list of instructions */
-  poly      *answer[1];           /* HOMFLY polynomial for the original link */
-  word       crossings[1];                    /* number of crossings in link */
-  word       common_sense;
-  char     *out;
-
-  c_init();                                          /* initialize variables */
-  k_read(crossings, knot, argv);  /* read link */
-
-  o_make(*knot, *crossings, plan);       /* make plan for attacking the link */
-  c_follow(*plan, *crossings, answer);                    /* follow the plan */
-  out = p_show(*answer);                                     /* display the answer */
-
-
-  //free((char *)*knot);
-  //free((char *)*plan);
-  p_kill(*answer);
-  /* If you want to be thorough, free the polynomials defined in c_init */
-
-  //free (llplus.term);
-  //free (lplusm.term);
-  //free (lminusm.term);
-  //free (llminus.term);
-  //free (mll.term);
-
-  return out;
-
-}
-
-// int main()
-// {
-//     char *out;
-//     char input[] = "1 32 0 -1 2 1 3 -1 5 -1 13 -1 14 1 15 1 0 1 9 1 11 1 12 -1 13 1 5 1 6 1 7 1 8 -1 10 -1 12 1 14 -1 1 1 2 -1 4 1 6 -1 10 1 11 -1 15 -1 1 -1 3 1 4 -1 7 -1 8 1 9 -1 0 -1 1 -1 2 1 3 -1 4 1 5 -1 6 -1 7 -1 8 -1 9 1 10 -1 11 1 12 -1 13 1 14 -1 15 -1";
-//
-//     out = compute(input);
-//     printf("%s", out);
-//     return 0;
-// }

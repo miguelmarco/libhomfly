@@ -6,19 +6,16 @@
 */
 #include <stdlib.h>
 #include <gc.h>
-#ifndef STANDARD
+
 #include "standard.h"
-#endif
-#ifndef DLLINK
 #include "dllink.h"
-#endif
 
 /*
 ------------------------------------------------------------------------------
   This displays all the nodes in a single string
 ------------------------------------------------------------------------------
 */
-void   l_show(dllink *l)
+void l_show(dllink *l)
 {
   dllink  *count;
 
@@ -42,9 +39,9 @@ void   l_show(dllink *l)
     pointer to the added dllink in outp
 ------------------------------------------------------------------------------
 */
-void   l_add(dllink *inp,     /* the next crossing in this string */
-	     word crossings,  /* the new crossing number */
-	     dllink **outp)   /* out: pointer to the new crossing */
+void l_add(dllink *inp,     /* the next crossing in this string */
+	         word crossings,  /* the new crossing number */
+	         dllink **outp)   /* out: pointer to the new crossing */
 {
   dllink  *newlink;
 

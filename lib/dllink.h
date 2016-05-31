@@ -6,11 +6,11 @@
   Bob Jenkins, 1990.  Public Domain.
 ------------------------------------------------------------------------------
 */
-#ifndef STANDARD
-# include "standard.h"
-#endif
-#ifndef  DLLINK 
-#define  DLLINK 
+
+#ifndef  DLLINK
+#define  DLLINK
+
+#include "standard.h"
 
 /*  Something of type DLLINK is a node in a doubly-linked cyclic list.
     C is the data stored in this node.
@@ -23,7 +23,7 @@ struct dllink
   struct dllink  *a;  /* the previous crossing */
   struct dllink  *z;  /* the next crossing */
 };
-typedef struct dllink   dllink;
+typedef struct dllink dllink;
 
 
 /* Procedures defined in dllink.c */

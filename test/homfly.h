@@ -1,1 +1,1 @@
-char *homfly(char *argv);
+char *homfly_str(char *argv);

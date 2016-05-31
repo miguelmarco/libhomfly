@@ -7,11 +7,10 @@
 ------------------------------------------------------------------------------
 */
 
-#ifndef STANDARD
-# include "standard.h"
-#endif
 #ifndef POLY
 #define POLY
+
+#include "standard.h"
 
 /*
 ------------------------------------------------------------------------------
@@ -21,13 +20,13 @@
  M is the power of M in the term.
 ------------------------------------------------------------------------------
 */
-struct term
+struct Term
 {
   sb4    coef;
   sb2    m;
   sb2    l;
 };
-typedef struct term   term;
+typedef struct Term Term;
 
 
 /*
@@ -37,12 +36,12 @@ typedef struct term   term;
   len is the number of terms.
 ------------------------------------------------------------------------------
 */
-struct poly
+struct Poly
 {
-  term  *term;
+  Term  *term;
   sb4     len;
 };
-typedef struct poly   poly;
+typedef struct Poly Poly;
 
 
 /*
@@ -61,13 +60,13 @@ if (1) \
     //if ((p)->len) free((char *)(p)->term); \
 
 
-word   p_check(poly *p);                 /* check if a poly is a power of -2 */
-void   p_copy(poly *inp, poly *outp);                       /* copies a poly */
-char   *p_show(poly *l);                                 /* displays the poly */
-void   p_add(poly *inp1, poly *inp2, poly *outp);          /* adds two polys */
-void   p_mult(poly *inp1, poly *inp2, poly *outp);     /* multiply two polys */
+boolean p_check(Poly *p);                 /* check if a poly is a power of -2 */
+void    p_copy(Poly *inp, Poly *outp);                       /* copies a Poly */
+char   *p_show(Poly *l);                                 /* displays the Poly */
+void    p_add(Poly *inp1, Poly *inp2, Poly *outp);          /* adds two Polys */
+void    p_mult(Poly *inp1, Poly *inp2, Poly *outp);     /* multiply two Polys */
 
 /* returns a poly with term added */
-void   p_term(sb4 coef, sb4 m, sb4 l, poly *inp, poly *outp);
+void   p_term(sb4 coef, sb4 m, sb4 l, Poly *inp, Poly *outp);
 
 #endif /* POLY */

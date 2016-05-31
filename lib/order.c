@@ -6,18 +6,11 @@
 */
 #include <stdlib.h>
 #include <gc.h>
-#ifndef STANDARD
+
 #include "standard.h"
-#endif
-#ifndef DLLINK
 #include "dllink.h"
-#endif
-#ifndef KNOT
 #include "knot.h"
-#endif
-#ifndef ORDER
 #include "order.h"
-#endif
 
 /* o_tabs: mark the neighbors and the neighbors of the neighbors */
 #define o_tabs( k, t, big) \
@@ -75,11 +68,10 @@ static void o_order2(
 
 
 
-static void       o_order1(
-    crossing  *k,
-    word      *oldorder,
-    word      *order,
-    word       crossings)
+static void o_order1(crossing  *k,
+                     word      *oldorder,
+                     word      *order,
+                     word       crossings)
 /*  This assumes that every crossing is used.
     This lists the crossings in an order my algorithm will hopefully like. */
 {
@@ -114,13 +106,12 @@ static void       o_order1(
 }
 
 /* Make instructions for just adding a crossing to the solved region */
-static void       o_add(
-    word      *n,         /* in/out: the number of strings in the weave */
-    dllink   **boundary,
-    word      *going_in,  /* in/out: which strings are inputs */
-    crossing  *k,
-    word       newcross,
-    instruct  *answer)
+static void o_add(word      *n,         /* in/out: the number of strings in the weave */
+                  dllink   **boundary,
+                  word      *going_in,  /* in/out: which strings are inputs */
+                  crossing  *k,
+                  word       newcross,
+                  Instruct  *answer)
 {
   word  i;
   word  old;
@@ -189,13 +180,12 @@ static void       o_add(
 
 
 /* Make instructions for removing one pair of boundary crossings */
-static void       o_delete(
-    word      *n,
-    dllink   **boundary,
-    word      *going_in,
-    instruct  *answer,
-    word      *done,
-    word       i)
+static void o_delete(word      *n,
+                     dllink   **boundary,
+                     word      *going_in,
+                     Instruct  *answer,
+                     word      *done,
+                     word       i)
 {
   word    j;
   dllink *l,
@@ -233,16 +223,14 @@ static void       o_delete(
 
 
 /* make instructions for handling a single crossing */
-static void       o_one_make(
-    word      *n,
-    dllink   **boundary,
-    word      *going_in,
-    crossing  *k,
-    word       which,
-    instruct  *answer)
+static void o_one_make(word      *n,
+                       dllink   **boundary,
+                       word      *going_in,
+                       crossing  *k,
+                       word       which,
+                       Instruct  *answer)
 {
-  word  i,
-        done;
+  word  i, done;
 
   /*  Move one crossing into the solved region */
   o_add(n, boundary, going_in, k, which, answer);
@@ -261,9 +249,9 @@ static void       o_one_make(
 
 
 /*  Make complete instructions for handling all the crossings */
-void       o_make(crossing  *k,
-		  word       crossings,
-		  instruct **list)
+void o_make(crossing  *k,
+            word       num_crossings,
+            Instruct **list)
 {
   word       order1[MAXCROSS];                         /* order of crossings */
   word       order2[MAXCROSS];                 /* another order of crossings */
@@ -271,14 +259,14 @@ void       o_make(crossing  *k,
   word       going_in[BIGWEAVE];
   word       i, j,
              n;
-  instruct  *l;
+  Instruct  *l;
 
-  l = (instruct *)GC_MALLOC(sizeof(instruct)*crossings);
-  for (i = 0; i < crossings; order1[i] = i, i++) ;
-  for (i = 0; i < crossings; order2[i] = i, i++) ;
-  o_order2(k, order2, order1, crossings);
-  o_order1(k, order1, order2, crossings);
-  o_order1(k, order2, order1, crossings);
+  l = (Instruct *)GC_MALLOC(sizeof(Instruct)*num_crossings);
+  for (i = 0; i < num_crossings; order1[i] = i, i++) ;
+  for (i = 0; i < num_crossings; order2[i] = i, i++) ;
+  o_order2(k, order2, order1, num_crossings);
+  o_order1(k, order1, order2, num_crossings);
+  o_order1(k, order2, order1, num_crossings);
   boundary[0] = k[order1[0]].o;
   boundary[1] = k[order1[0]].o->z;
   going_in[0] = 1;
@@ -286,7 +274,7 @@ void       o_make(crossing  *k,
   n           = 2;
 
 
-  for (i = 0; i < crossings; i++)
+  for (i = 0; i < num_crossings; i++)
   {
     o_one_make(&n, boundary, going_in, k, order1[i], (l+i));
     // printf("going in: ");
@@ -300,13 +288,9 @@ void       o_make(crossing  *k,
 }
 
 
-
-void       o_show(
-    instruct  *l,
-    word       crossings)
+/*void o_show(Instruct *l, word num_crossings)
 {
   word  i;
   word  j;
-
-}
+}*/
 
