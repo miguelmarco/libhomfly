@@ -38,22 +38,21 @@ char *homfly_str(char *argv)
 
 Poly *homfly(char *argv)
 {
-  crossing  *link;          /* link for which to calculate HOMFLY polynomial */
-  word       num_crossings;                   /* number of crossings in link */
+  Link *link;
 
-  k_read(&num_crossings, &link, argv);                          /* read link */
-  return c_homfly(link, num_crossings);
+  k_read(&link, argv);                          /* read link */
+  return c_homfly(link);
 }
 
 /**
  * Compute the homfly polynomial and return the result as the polynomial answer.
  */
-Poly *c_homfly(crossing *link, word num_crossings)
+Poly *c_homfly(Link *link)
 {
   Instruct  *plan;                                   /* list of instructions */
 
   c_init();                                          /* initialize variables */
 
-  o_make(link, num_crossings, &plan);    /* make plan for attacking the link */
-  return c_follow(plan, num_crossings);                   /* follow the plan */
+  o_make(link, &plan);                   /* make plan for attacking the link */
+  return c_follow(plan, link->num_crossings);             /* follow the plan */
 }

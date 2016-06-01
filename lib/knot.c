@@ -19,24 +19,26 @@
   After that, it displays the HANDedness of each crossing.
 ------------------------------------------------------------------------------
 */
-void k_show(word num_crossings, crossing  *k)
+void k_show(Link *link)
 {
   word   i, j;
   word   tab[MAXCROSS];
   dllink  *count, *start;
 
-  for (i=0; i<num_crossings; ++i) tab[i] = 0;
+  for (i=0; i<link->num_crossings; ++i) tab[i] = 0;
   for (j=0; j<2; ++j)
   {
-    for (i=0; i<num_crossings; ++i)
+    for (i=0; i<link->num_crossings; ++i)
     {
-      if (k[i].hand && ((tab[i] == 0) || (tab[i] == 1) || (tab[i] == 10)))
+      if (link->data[i].hand && ((tab[i] == 0) || (tab[i] == 1) || (tab[i] == 10)))
       {
-        if (tab[i] != 10) count = k[i].o;
-        else count = k[i].u;
+        if (tab[i] != 10)
+          count = link->data[i].o;
+        else
+          count = link->data[i].u;
         start = count;
 
-        if (k[count->c].o == count)
+        if (link->data[count->c].o == count)
         {
           tab[count->c] += 10;
         }
@@ -44,11 +46,11 @@ void k_show(word num_crossings, crossing  *k)
         {
           tab[count->c] += 1;
         }
-        if (count != 0) count = count->z;
+        if (count != 0)
+          count = count->z;
         while (count != start)
         {
-
-          if (k[count->c].o == count)
+          if (link->data[count->c].o == count)
             tab[count->c] += 10;
           else
             tab[count->c] += 1;
@@ -68,7 +70,7 @@ void k_show(word num_crossings, crossing  *k)
   Assumes the file given by the user exists and contains a legal knot.
 ------------------------------------------------------------------------------
 */
-boolean k_read(word *num_crossings, crossing **kk, char *filename)
+boolean k_read(Link **link, char *filename)
 {
   char       name[20];
   word       links,
@@ -78,6 +80,8 @@ boolean k_read(word *num_crossings, crossing **kk, char *filename)
              over,
              i,
              j;
+  int        num_crossings;
+  crossing  *kk;
   crossing   k[MAXCROSS];
   FILE      *f;
 
@@ -92,13 +96,13 @@ boolean k_read(word *num_crossings, crossing **kk, char *filename)
   fscanf(f, "%d ", &links);
   for (i=0; i<links; ++i)                    /* how many pieces of string */
   {
-    fscanf(f, "%d ", num_crossings);
+    fscanf(f, "%d ", &num_crossings);
     fscanf(f, "%d %d ", &startwhere, &startover);
     if (startover == 1)
       l_add((dllink *)0, startwhere, &k[startwhere].o);
     else
       l_add((dllink *)0, startwhere, &k[startwhere].u);
-    for (j=1; j<*num_crossings; ++j)
+    for (j=1; j<num_crossings; ++j)
     {
       fscanf(f, "%d %d ", &where, &over);
 
@@ -125,24 +129,28 @@ boolean k_read(word *num_crossings, crossing **kk, char *filename)
       }
     }
   }
-  *num_crossings = 0;
+  num_crossings = 0;
   while (fscanf(f, "%d %d ", &where, &over) == 2)
   {
     k[where].hand = over;
-    if (where > *num_crossings) *num_crossings = where;
+    if (where > num_crossings) num_crossings = where;
   }
-  ++(*num_crossings);
+  ++num_crossings;
   i = fclose(f);
 
-  *kk = (crossing *)GC_MALLOC(sizeof(crossing)*(*num_crossings));
-  for (i=0; i<(*num_crossings); ++i) (*kk)[i] = k[i];
+  kk = (crossing *)GC_MALLOC(sizeof(crossing) * num_crossings);
+  for (i=0; i < num_crossings; ++i) kk[i] = k[i];
 
   /* check that every crossing has an overpass and underpass */
-  for (i=0; i<(*num_crossings); ++i)
+  for (i=0; i<num_crossings; ++i)
   {
     if (!k[i].o || !k[i].u || !(k[i].hand == 1 || k[i].hand == -1))
       return FALSE;
   }
+
+  *link = (Link*)GC_MALLOC(sizeof(Link));
+  (*link)->num_crossings = num_crossings;
+  (*link)->data = kk;
   return TRUE;
 }
 

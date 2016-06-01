@@ -33,6 +33,6 @@ void   c_init(void);                        /* Initialize global polynomials */
 void   c_handle(word *list, struct weave *thisweave, struct weave *newweaves);
 
 /* c_follow: Follow all instructions, return the poly for the original link */
-Poly *c_follow(Instruct *l, word num_crossings);
+Poly *c_follow(Instruct *l, int num_crossings);
 
 #endif /* ifndef CONTROL */
