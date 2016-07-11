@@ -41,6 +41,14 @@ struct crossing
 };
 
 typedef struct crossing crossing;
+
+struct Link
+{
+    crossing *data;
+    int num_crossings;
+};
+typedef struct Link Link;
+
 #endif
 
 #ifndef POLY
