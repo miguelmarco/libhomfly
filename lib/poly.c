@@ -76,7 +76,7 @@ char *p_show(Poly *p)
   {
     fprintf(stream, "0");
     fclose(stream);
-    return NULL;
+    return bp;
   }
 
   for (first = 1, pt = p->term, pend = pt+p->len; pt != pend; ++pt)
