@@ -70,7 +70,7 @@ void k_show(Link *link)
   Assumes the file given by the user exists and contains a legal knot.
 ------------------------------------------------------------------------------
 */
-boolean k_read(Link **link, char *filename)
+boolean k_read(Link **link, char *f)
 {
   char       name[20];
   word       links,
@@ -80,31 +80,32 @@ boolean k_read(Link **link, char *filename)
              over,
              i,
              j;
-  int        num_crossings;
+  int        num_crossings, pos;
   crossing  *kk;
   crossing   k[MAXCROSS];
-  FILE      *f;
 
   for (i = 0; i < MAXCROSS; i++) k[i].hand = 0;
 
-  f = fmemopen(filename, strlen(filename), "r");
   if (f == 0)
   {
-    fclose(f);
     return FALSE;
   }
-  fscanf(f, "%d ", &links);
+  sscanf(f, "%d%n", &links, &pos);
+  f += pos;
   for (i=0; i<links; ++i)                    /* how many pieces of string */
   {
-    fscanf(f, "%d ", &num_crossings);
-    fscanf(f, "%d %d ", &startwhere, &startover);
+    sscanf(f, "%d%n", &num_crossings, &pos);
+    f += pos;
+    sscanf(f, "%d %d%n", &startwhere, &startover, &pos);
+    f += pos;
     if (startover == 1)
       l_add((dllink *)0, startwhere, &k[startwhere].o);
     else
       l_add((dllink *)0, startwhere, &k[startwhere].u);
     for (j=1; j<num_crossings; ++j)
     {
-      fscanf(f, "%d %d ", &where, &over);
+      sscanf(f, "%d %d%n", &where, &over, &pos);
+      f += pos;
 
       /* check that OVER is legal */
       if ((over != 1) && (over != -1))
@@ -130,13 +131,13 @@ boolean k_read(Link **link, char *filename)
     }
   }
   num_crossings = 0;
-  while (fscanf(f, "%d %d ", &where, &over) == 2)
+  while (sscanf(f, "%d %d%n", &where, &over, &pos) == 2)
   {
+    f += pos;
     k[where].hand = over;
     if (where > num_crossings) num_crossings = where;
   }
   ++num_crossings;
-  i = fclose(f);
 
   kk = (crossing *)GC_MALLOC(sizeof(crossing) * num_crossings);
   for (i=0; i < num_crossings; ++i) kk[i] = k[i];
