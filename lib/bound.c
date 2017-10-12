@@ -21,21 +21,21 @@ A step is either adding a crossing, adding a crossing and removing a pair of
 boundary crossings, or just removing a pair of boundary crossings.
 ------------------------------------------------------------------------------
 */
+word list[BIGWEAVE];              /* description of first new weave */
+word list2[BIGWEAVE];           /* description of second, if needed */
+word old_going_in[BIGWEAVE];/* Was *i* an input? *old_going_in[i]*. */
+word going_in[BIGWEAVE];    /* Will *i* be an input? *going_in[i]*. */
+word map[BIGWEAVE];   /* i of old weave becomes map[i] of new weave */
+word first;                    /* first boundary crossing to remove */
+word second;                  /* second boundary crossing to remove */
+word right;          /* Is the crossing being added be righthanded? */
+word oldcross;     /* number of boundary crossings in the old weave */
+word newcross;    /* number of boundary crossings in each new weave */
+word oldin;                    /* number of inputs to the old weave */
+word newin;                    /* number of inputs to the new weave */
+
 void b_manip(weave *oldweaves)
 {
-  extern word list[BIGWEAVE];              /* description of first new weave */
-  extern word list2[BIGWEAVE];           /* description of second, if needed */
-  extern word old_going_in[BIGWEAVE];/* Was *i* an input? *old_going_in[i]*. */
-  extern word going_in[BIGWEAVE];    /* Will *i* be an input? *going_in[i]*. */
-  extern word map[BIGWEAVE];   /* i of old weave becomes map[i] of new weave */
-  extern word first;                    /* first boundary crossing to remove */
-  extern word second;                  /* second boundary crossing to remove */
-  extern word right;          /* Is the crossing being added be righthanded? */
-  extern word oldcross;     /* number of boundary crossings in the old weave */
-  extern word newcross;    /* number of boundary crossings in each new weave */
-  extern word oldin;                    /* number of inputs to the old weave */
-  extern word newin;                    /* number of inputs to the new weave */
-
   word       i, j, k;
   ub4        boundary[2];
 
