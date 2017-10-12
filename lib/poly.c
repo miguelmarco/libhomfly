@@ -68,14 +68,15 @@ char *p_show(Poly *p)
   sb4    l;
   char *bp;
   size_t size;
-  FILE *stream;
+  char *stream;
+  int pos;
 
 
-  stream = open_memstream(&bp, &size);
+  stream = (char *)GC_MALLOC(sizeof(char) * 100000);
+  bp = stream;
   if (!p->len)
   {
-    fprintf(stream, "0");
-    fclose(stream);
+    sprintf(stream, "0");
     return bp;
   }
 
@@ -84,24 +85,33 @@ char *p_show(Poly *p)
     if (!pt->coef) continue;
     m = p_sign(pt->m);
     l = p_sign(pt->l);
-    if (pt->coef < ((sb4)0)) fprintf(stream, " - ");
-    else if (!first) fprintf(stream, " + ");
-    if (pt->coef > ((sb4)1) ) fprintf(stream, "%ld", pt->coef);
-    else if (pt->coef < (sb4)(-1)) fprintf(stream, "%ld", -pt->coef);
-    else if ((!l) && (!m)) fprintf(stream, "%d", 1);
+    if (pt->coef < ((sb4)0)) { sprintf(stream, " - "); stream += 3; }
+    else if (!first) { sprintf(stream, " + "); stream += 3; }
+    pos = 0;
+    if (pt->coef > ((sb4)1) ) sprintf(stream, "%ld%n", pt->coef, &pos);
+    else if (pt->coef < (sb4)(-1)) sprintf(stream, "%ld%n", -pt->coef, &pos);
+    else if ((!l) && (!m)) sprintf(stream, "%d%n", 1, &pos);
+    stream += pos;
     if (pt->m)
     {
-      fprintf(stream, "M");
-      if (m != 1) fprintf(stream, "^%ld", m);
+      sprintf(stream, "M");
+      stream++;
+      if (m != 1) {
+        sprintf(stream, "^%ld%n", m, &pos);
+        stream += pos;
+      }
     }
     if (pt->l)
     {
-      fprintf(stream, "L");
-      if (l != 1) fprintf(stream, "^%ld", l);
+      sprintf(stream, "L");
+      stream++;
+      if (l != 1) {
+         sprintf(stream, "^%ld%n", l, &pos);
+         stream += pos;
+      }
     }
     if (first) first = 0;
   }
-  fclose(stream);
   return bp;
 }
 
