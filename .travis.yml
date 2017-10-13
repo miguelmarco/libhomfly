@@ -1,0 +1,6 @@
+language: c
+compiler:
+  - gcc
+before_install:
+  - sudo apt-get install libgc-dev
+script: autoreconf --install && automake --add-missing --copy && ./configure && make check
