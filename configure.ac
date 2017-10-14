@@ -1,4 +1,4 @@
-AC_INIT([libhomfly], [1.0r2], [mmarco@unizar.es])
+AC_INIT([libhomfly], [1.0r3], [mmarco@unizar.es])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([foreign -Wall])
