@@ -15,15 +15,17 @@ Public Domain
 #include "model.h"
 #include "control.h"
 
+Instruct   plan;
+Poly   llplus;
+Poly   lplusm;
+Poly   lminusm;
+Poly   llminus;
+Poly   mll;
+ub4    total_weaves_handled;
+
 /* these variables are global, and may be because nobody ever changes them */
 void c_init()
 {
-  extern Poly   llplus;
-  extern Poly   lplusm;
-  extern Poly   lminusm;
-  extern Poly   llminus;
-  extern Poly   mll;
-  extern ub4    total_weaves_handled;
   Poly          blank[1];
 
   p_init(blank);

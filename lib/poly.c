@@ -68,15 +68,24 @@ char *p_show(Poly *p)
   sb4    l;
   char *bp;
   size_t size;
-  FILE *stream;
-
-
-  stream = open_memstream(&bp, &size);
+  int pos, offs, maxlen;
+#define bp_chunksize 10000
+#define bp_chunkreserve  500
+#define bp_sprintf(...) {\
+        sprintf(bp+offs, __VA_ARGS__, &pos);\
+        offs += pos;\
+        if (offs > maxlen - bp_chunkreserve) {\
+	   maxlen += bp_chunksize + bp_chunkreserve;\
+           bp = (char *)GC_REALLOC(bp, sizeof(char) * maxlen);\
+        }\
+      }
+  maxlen =  bp_chunksize + bp_chunkreserve;
+  offs = 0;
+  bp = (char *)GC_MALLOC(sizeof(char) * maxlen);
   if (!p->len)
   {
-    fprintf(stream, "0");
-    fclose(stream);
-    return;
+    bp_sprintf("0%n")
+    return bp;
   }
 
   for (first = 1, pt = p->term, pend = pt+p->len; pt != pend; ++pt)
@@ -84,24 +93,23 @@ char *p_show(Poly *p)
     if (!pt->coef) continue;
     m = p_sign(pt->m);
     l = p_sign(pt->l);
-    if (pt->coef < ((sb4)0)) fprintf(stream, " - ");
-    else if (!first) fprintf(stream, " + ");
-    if (pt->coef > ((sb4)1) ) fprintf(stream, "%ld", pt->coef);
-    else if (pt->coef < (sb4)(-1)) fprintf(stream, "%ld", -pt->coef);
-    else if ((!l) && (!m)) fprintf(stream, "%d", 1);
+    if (pt->coef < ((sb4)0)) bp_sprintf(" - %n")
+    else if (!first) bp_sprintf(" + %n")
+    if (pt->coef > ((sb4)1) ) bp_sprintf("%ld%n", pt->coef)
+    else if (pt->coef < (sb4)(-1)) bp_sprintf("%ld%n", -pt->coef)
+    else if ((!l) && (!m)) bp_sprintf("%d%n", 1)
     if (pt->m)
     {
-      fprintf(stream, "M");
-      if (m != 1) fprintf(stream, "^%ld", m);
+      bp_sprintf("M%n")
+      if (m != 1) bp_sprintf("^%ld%n", m)
     }
     if (pt->l)
     {
-      fprintf(stream, "L");
-      if (l != 1) fprintf(stream, "^%ld", l);
+      bp_sprintf("L%n")
+      if (l != 1) bp_sprintf("^%ld%n", l)
     }
     if (first) first = 0;
   }
-  fclose(stream);
   return bp;
 }
 

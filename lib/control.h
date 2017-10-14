@@ -11,15 +11,15 @@
 #include "poly.h"
 #include "order.h"
 
-/* Global variables */
+/* Global variables -- located in control.c */
 
-Instruct   plan;       /* plan of what to do to each old weave for this step */
-Poly       llplus;                                                   /* -L^2 */
-Poly       lplusm;                                                    /* -LM */
-Poly       lminusm;                                              /* -(L^-1)M */
-Poly       llminus;                                                 /* -L^-2 */
-Poly       mll;                                       /* (M^-1)(-(L^-1) - L) */
-ub4        total_weaves_handled;             /* how much work has been done? */
+extern Instruct   plan;       /* plan of what to do to each old weave for this step */
+extern Poly       llplus;                                                   /* -L^2 */
+extern Poly       lplusm;                                                    /* -LM */
+extern Poly       lminusm;                                              /* -(L^-1)M */
+extern Poly       llminus;                                                 /* -L^-2 */
+extern Poly       mll;                                       /* (M^-1)(-(L^-1) - L) */
+extern ub4        total_weaves_handled;             /* how much work has been done? */
 
 /*
 ------------------------------------------------------------------------------
