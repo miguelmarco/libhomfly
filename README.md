@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/miguelmarco/libhomfly.svg?branch=master)](https://travis-ci.org/miguelmarco/libhomfly)
+
 # libhomfly
 ## Library to compute the homfly polynomial of a link
 
