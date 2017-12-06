@@ -39,7 +39,7 @@ char *homfly_str(char *argv)
 Poly *homfly(char *argv)
 {
   Link *link;
-
+  GC_INIT();
   k_read(&link, argv);                          /* read link */
   return c_homfly(link);
 }
