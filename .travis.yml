@@ -10,7 +10,15 @@ matrix:
       apt:
         packages:
         - libgc-dev
-
+  #powerjobs
+  - os: linux
+    arch: ppc64le
+    compiler: gcc
+    addons:
+      apt:
+        packages:
+        - libgc-dev
+  
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update          ; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install bdw-gc  ; fi
