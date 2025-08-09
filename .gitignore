@@ -13,3 +13,13 @@ config.status
 configure
 libtool
 test/test_example
+autom4te.cache/
+build-aux/
+lib/.deps/
+lib/.libs/
+libhomfly.pc
+m4/
+test/.deps/
+test/.libs/
+test/*.log
+test/*.trs
