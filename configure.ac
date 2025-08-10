@@ -6,6 +6,7 @@ AM_PROG_AR
 AC_PROG_CC
 LT_INIT([win32-dll])
 AC_CANONICAL_HOST
+PKG_INSTALLDIR
 dnl libtool requires "-no-undefined" for win32 dll
 AC_SUBST(HOMFLY_LDFLAGS)
 case $host_os in
@@ -15,6 +16,6 @@ case $host_os in
         fi
     ;;
 esac
-AC_CONFIG_FILES([Makefile lib/Makefile test/Makefile])
+AC_CONFIG_FILES([Makefile lib/Makefile test/Makefile libhomfly.pc])
 AC_OUTPUT
 
