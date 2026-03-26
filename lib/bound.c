@@ -192,11 +192,10 @@ crossings.  This may require replacing the original weave with one, two, or
 more new weaves.  If more than two are needed, do not set *one* or *two*.
 ------------------------------------------------------------------------------
 */
-void b_one_pair(list, list2, one, two)
-word  *list;    /* list of original inputs/outputs, modified by this routine */
-word  *list2;                      /* inputs/outputs of the second new weave */
-word  *one;                                   /* will one new weave suffice? */
-word  *two;                                  /* will two new weaves suffice? */
+void b_one_pair(word  *list,   /* list of original inputs/outputs, modified by this routine */
+                word  *list2,                     /* inputs/outputs of the second new weave */
+                word  *one,                                  /* will one new weave suffice? */
+                word  *two)                                 /* will two new weaves suffice? */
 {
   word   a;
   word   i;

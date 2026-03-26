@@ -26,7 +26,7 @@ if (1) \
 /*  This assumes that every crossing is used.
     This lists the crossings in an order my algorithm will hopefully like. */
 static void o_order2(
-    crossing  *k,
+    const crossing  *k,
     word      *oldorder,
     word      *order,
     word       crossings)
@@ -37,8 +37,8 @@ static void o_order2(
             *endp,
              tmp1,
              tmp2;
-  crossing  *kp,
-            *kp2;
+  const crossing  *kp,
+                  *kp2;
 
   for (ip = tab, endp = tab+crossings; ip != endp;) *(ip++) = 0;
   *order = oldorder[crossings-1];
@@ -69,7 +69,7 @@ static void o_order2(
 
 /*  This assumes that every crossing is used.
     This lists the crossings in an order my algorithm will hopefully like. */
-static void o_order1(crossing  *k,
+static void o_order1(const crossing  *k,
                      word      *oldorder,
                      word      *order,
                      word       crossings)
@@ -80,7 +80,7 @@ static void o_order1(crossing  *k,
             *endp,
              tmp1,
              tmp2;
-  crossing  *kp2;
+  const crossing  *kp2;
 
   for (ip = tab, endp = tab+crossings; ip != endp;) *(ip++) = 0;
   *order = oldorder[crossings-1];
@@ -110,7 +110,7 @@ static void o_order1(crossing  *k,
 static void o_add(word      *n,         /* in/out: the number of strings in the weave */
                   dllink   **boundary,
                   word      *going_in,  /* in/out: which strings are inputs */
-                  crossing  *k,
+                  const crossing  *k,
                   word       newcross,
                   Instruct  *answer)
 {
@@ -229,7 +229,7 @@ static void o_delete(word      *n,
 static void o_one_make(word      *n,
                        dllink   **boundary,
                        word      *going_in,
-                       crossing  *k,
+                       const crossing  *k,
                        word       which,
                        Instruct  *answer)
 {
