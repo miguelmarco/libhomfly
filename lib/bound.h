@@ -103,7 +103,7 @@ There are three representations of weave boundaries.
 ---------------------------------------------------------------------------
 */
 #define b_cross( inp1, inp2, outp1, outp2) \
- (((inp1)<(inp2))==((inp2)<(outp1))==((outp1)<(outp2))==((inp1)<(outp2)))
+ ((((inp1)<(inp2))==((inp2)<(outp1)))==(((outp1)<(outp2))==((inp1)<(outp2))))
 
 
 /*

@@ -40,7 +40,6 @@ int main(int argc, char *argv[])
     f = fopen(argv[1], "r");
     if (f == NULL)
     {
-        fclose(f);
         return 1;
     }
 

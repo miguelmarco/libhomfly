@@ -71,8 +71,7 @@ void l_add(dllink *inp,     /* the next crossing in this string */
   This deletes a given dllink from a loop
 ------------------------------------------------------------------------------
 */
-void   l_del(l)
-dllink **l;
+void   l_del(dllink **l)
 {
   dllink  *ll = *l;
 
