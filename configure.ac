@@ -7,6 +7,13 @@ AC_PROG_CC
 LT_INIT([win32-dll])
 AC_CANONICAL_HOST
 PKG_INSTALLDIR
+
+PKG_CHECK_MODULES(
+    [BDW_GC],
+    [bdw-gc],
+    [],
+    [AC_MSG_ERROR([bdw-gc is missing])])
+
 dnl libtool requires "-no-undefined" for win32 dll
 AC_SUBST(HOMFLY_LDFLAGS)
 case $host_os in
